@@ -15,6 +15,7 @@ class CreateUserRolesTable extends Migration
     {
         Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
+			$table->foreignId('user_id')->constrained();
 			$table->foreignId('group_role_id')->constrained();
 			$table->foreignId('hospital_unit_id')->constrained();
 			$table->timestamp('creation_date');
