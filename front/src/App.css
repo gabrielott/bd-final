@@ -33,7 +33,11 @@
 	width: 50vw;
 }
 
-.question-panel button {
+.question-panel {
+	display: flex;
+}
+
+.question-panel-editing button {
 	width: 100%;
 }
 

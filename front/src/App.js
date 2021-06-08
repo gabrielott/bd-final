@@ -87,10 +87,13 @@ class Question extends React.Component {
 				</div>
 				<QuestionPanel
 					onDelete={() => this.props.onDelete(this.props.index)}
-					// onDelete={() => console.log(this.props.index)}
 					onEdit={this.handleEdit}
+					onMoveUp={() => this.props.onMoveUp(this.props.index)}
+					onMoveDown={() => this.props.onMoveDown(this.props.index)}
 					label={this.props.label}
 					type={this.props.type}
+					numQuestions={this.props.numQuestions}
+					index={this.props.index}
 				/>
 			</div>
 		);
@@ -123,50 +126,63 @@ class QuestionPanel extends React.Component {
 
 
 	render() {
-		const popupStyle = {
-			width: "300px"
-			// height: "20%",
-		};
-
 		return (
 			<div className="question-panel">
-				<button type="button" onClick={this.props.onDelete}>Apagar</button>
-				<Popup
-					trigger={<button type="button">Editar</button>}
-					position="left center"
-					contentStyle={popupStyle}
-					closeOnDocumentClick
-				>
-					<form className="edit-popup" onChange={this.handleInputChange}>
-						<label>
-							Título:
-							<input
-								name="label"
-								type="text"
-								value={this.state.label}
-							/>
-						</label>
-						<div className="edit-radio">
+				<div className="question-panel-editing">
+					<button type="button" onClick={this.props.onDelete}>Apagar</button>
+					<Popup
+						trigger={<button type="button">Editar</button>}
+						position="left center"
+						contentStyle={{width: "300px"}}
+						closeOnDocumentClick
+					>
+						<form className="edit-popup" onChange={this.handleInputChange}>
 							<label>
-								<input name="type" type="radio" value={QuestionType.text}/>
-								Textual
+								Título:
+								<input
+									name="label"
+									type="text"
+									value={this.state.label}
+								/>
 							</label>
-							<label>
-								<input name="type" type="radio" value={QuestionType.boolean}/>
-								Booleano
-							</label>
-							<label>
-								<input name="type" type="radio" value={QuestionType.date}/>
-								Data
-							</label>
-						</div>
-						<button
-							type="button"
-							onClick={() => this.props.onEdit(this.state.label, this.state.type)}>
-							Salvar
-						</button>
-					</form>
-				</Popup>
+							<div className="edit-radio">
+								<label>
+									<input name="type" type="radio" value={QuestionType.text}/>
+									Textual
+								</label>
+								<label>
+									<input name="type" type="radio" value={QuestionType.boolean}/>
+									Booleano
+								</label>
+								<label>
+									<input name="type" type="radio" value={QuestionType.date}/>
+									Data
+								</label>
+							</div>
+							<button
+								type="button"
+								onClick={() => this.props.onEdit(this.state.label, this.state.type)}>
+								Salvar
+							</button>
+						</form>
+					</Popup>
+				</div>
+				<div className="question-panel-ordering">
+					<button
+						disabled={this.props.index === 0}
+						type="button"
+						onClick={this.props.onMoveUp}
+					>
+						/\
+					</button>
+					<button
+						disabled={this.props.index === this.props.numQuestions - 1}
+						type="button"
+						onClick={this.props.onMoveDown}
+					>
+						\/
+					</button>
+				</div>
 			</div>
 		);
 	}
@@ -225,6 +241,8 @@ class App extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
+		this.handleMoveUp = this.handleMoveUp.bind(this);
+		this.handleMoveDown = this.handleMoveDown.bind(this);
 	}
 
 	handleSubmit(event) {
@@ -283,6 +301,47 @@ class App extends React.Component {
 		console.log(`delete ${index}`);
 	}
 
+	handleMoveUp(index) {
+		console.log(`up ${index}`);
+
+		const labels = this.state.labels.slice();
+		const names = this.state.names.slice();
+		const types = this.state.types.slice();
+		const questions = this.state.questions.slice();
+
+		labels[index - 1] = labels.splice(index, 1, labels[index - 1])[0]
+		names[index - 1] = names.splice(index, 1, names[index - 1])[0]
+		types[index - 1] = types.splice(index, 1, types[index - 1])[0]
+		questions[index - 1] = questions.splice(index, 1, questions[index - 1])[0]
+
+		this.setState({
+			labels: labels,
+			names: names,
+			types: types,
+			questions: questions,
+		});
+	}
+
+	handleMoveDown(index) {
+		console.log(`down ${index}`);
+
+		const labels = this.state.labels.slice();
+		const names = this.state.names.slice();
+		const types = this.state.types.slice();
+		const questions = this.state.questions.slice();
+
+		labels[index + 1] = labels.splice(index, 1, labels[index + 1])[0]
+		names[index + 1] = names.splice(index, 1, names[index + 1])[0]
+		types[index + 1] = types.splice(index, 1, types[index + 1])[0]
+		questions[index + 1] = questions.splice(index, 1, questions[index + 1])[0]
+
+		this.setState({
+			labels: labels,
+			names: names,
+			types: types,
+			questions: questions,
+		});
+	}
 
 	render() {
 		const generic_questions = this.state.questions.map((q, i) => {
@@ -295,8 +354,11 @@ class App extends React.Component {
 					type={this.state.types[i]}
 					onChange={this.handleInputChange}
 					onDelete={this.handleDelete}
+					onMoveUp={this.handleMoveUp}
+					onMoveDown={this.handleMoveDown}
 					data={this.state}
 					index={i}
+					numQuestions={this.state.labels.length}
 				/>
 			);
 		});
