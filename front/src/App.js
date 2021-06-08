@@ -241,7 +241,8 @@ class App extends React.Component {
 				<DateQuestion name="date1"/>,
 				<TextQuestion name="texto2"/>,
 				<TextQuestion name="texto3"/>
-			]
+			],
+			list: true
 		};
 
 		this.unique_iter = 0;
@@ -249,6 +250,9 @@ class App extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
+		this.handleNewForm = this.handleNewForm.bind(this);
+
+		this.handleList = this.handleList.bind(this);
 	}
 
 	handleSubmit(event) {
@@ -267,7 +271,18 @@ class App extends React.Component {
 			[name]: value
 		});
 	}
-
+	handleNewForm(event){
+		this.setState({
+			labels: [],
+			names: [],
+			types: [],
+			questions: []
+		});
+	}
+	handleList(event){
+		this.setState({ list:false
+		});
+	}
 	handleCreate(event) {
 		let auxl = this.state.labels;
 		auxl.push("label nova");
@@ -303,10 +318,30 @@ class App extends React.Component {
 
 		return (
 			<div>
+			<div className="temp">
 				<div className="add-button">
 					<button type="button" onClick={this.handleCreate}>+</button>
-				</div>	
+				</div>
+				<div className="add-button">
+					<button type="button" onClick={this.handleNewForm}>Criar Novo Formulário</button>
+				</div>
+				<div className="add-button">
+					<button type="button" onClick={this.handleList}>Listar Formulários</button>
+				</div>
+			</div>
+			{(this.state.list) &&
+			<div>
 				<Survey title="Questionário" questions={generic_questions}/>
+			</div>
+			}
+			{
+				(!this.state.list) &&
+				<div className="temp">
+					<p> Questionário </p>
+					&nbsp;
+					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Selecionar</button>
+				</div>
+			}
 			</div>
 		);
 	}
