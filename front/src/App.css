@@ -1,3 +1,9 @@
+.add-button {
+	margin: 20px;
+	margin-right: 9%;
+	float: right;
+}
+
 .question {
 	display: flex;
 	justify-content: space-between;

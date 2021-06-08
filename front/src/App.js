@@ -6,7 +6,7 @@ import "reactjs-popup/dist/index.css";
 const QuestionType = Object.freeze({
 	text: "1",
 	boolean: "2",
-	date: "3",
+	date: "3"
 });
 
 function TextQuestion(props) {
@@ -51,7 +51,7 @@ class Question extends React.Component {
 		this.state = {
 			question: this.props.question,
 			label: this.props.label,
-			type: this.props.type,
+			type: this.props.type
 		};
 
 		this.handleDelete = this.handleDelete.bind(this);
@@ -61,6 +61,25 @@ class Question extends React.Component {
 	handleDelete() {
 		console.log(`delete ${this.props.name}`);
 	}
+
+	/*handleCreate() {
+		let question;
+		switch (type) {
+			case QuestionType.text:
+				question = <TextQuestion name={this.props.name}/>;
+				break;
+			case QuestionType.boolean:
+				question = <BoolQuestion name={this.props.name}/>;
+				break;
+			case QuestionType.date:
+				question = <DateQuestion name={this.props.name}/>;
+				break;
+			default:
+				break;
+		}
+
+		this.setState({question: question, label: label, type: type});
+	}*/
 
 	handleEdit(label, type) {
 		let question;
@@ -122,14 +141,14 @@ class QuestionPanel extends React.Component {
 		console.log(`${name} = ${value}`);
 
 		this.setState({
-			[name]: value,
+			[name]: value
 		});
 	}
 
 
 	render() {
 		const popupStyle = {
-			width: "300px",
+			width: "300px"
 			// height: "20%",
 		};
 
@@ -194,8 +213,42 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			labels: [
+				"radio label",
+				"texto label",
+				"date label",
+				"texto label 2",
+				"texto label 3"
+			],
+			names: [
+				"radio",
+				"textoA",
+				"dateA",
+				"textoB",
+				"textoC"
+			],
+			types: [
+				QuestionType.boolean,
+				QuestionType.text,
+				QuestionType.date,
+				QuestionType.text,
+				QuestionType.text
+			],
+			questions: [
+				<BoolQuestion name="radio"/>,
+				<TextQuestion name="texto1"/>,
+				<DateQuestion name="date1"/>,
+				<TextQuestion name="texto2"/>,
+				<TextQuestion name="texto3"/>
+			]
+		};
+
+		this.unique_iter = 0;
+
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleCreate = this.handleCreate.bind(this);
 	}
 
 	handleSubmit(event) {
@@ -211,51 +264,38 @@ class App extends React.Component {
 		console.log(`${name} = ${value}`);
 
 		this.setState({
-			[name]: value,
+			[name]: value
 		});
 	}
 
+	handleCreate(event) {
+		let auxl = this.state.labels;
+		auxl.push("label nova");
+		let auxn = this.state.names;
+		auxn.push("texto"+this.unique_iter);
+		let auxt = this.state.types;
+		auxt.push(QuestionType.text);
+		let auxq = this.state.questions;
+		auxq.push(<TextQuestion name="textonovo"/>);
+		this.setState({
+			labels: auxl,
+			names: auxn,
+			types: auxt,
+			questions: auxq
+		});
+		this.unique_iter++;
+	}
+
 	render() {
-		const labels = [
-			"radio label",
-			"texto label",
-			"date label",
-			"texto label 2",
-			"texto label 3",
-		];
 
-		const names = [
-			"radio",
-			"texto1",
-			"date1",
-			"texto2",
-			"texto3",
-		];
-
-		const types = [
-			QuestionType.boolean,
-			QuestionType.text,
-			QuestionType.date,
-			QuestionType.text,
-			QuestionType.text,
-		];
-
-		const questions = [
-			<BoolQuestion name="radio"/>,
-			<TextQuestion name="texto1"/>,
-			<DateQuestion name="date1"/>,
-			<TextQuestion name="texto2"/>,
-			<TextQuestion name="texto3"/>,
-		];
-
-		const generic_questions = questions.map((q, i) => {
+		const generic_questions = this.state.questions.map((q, i) => {
 			return (
 				<Question
-					label={labels[i]}
+					label={this.state.labels[i]}
 					question={q}
-					name={names[i]}
-					key={names[i]}
-					type={types[i]}
+					name={this.state.names[i]}
+					key={this.state.names[i]}
+					type={this.state.types[i]}
 					onChange={this.handleInputChange}
 				/>
 			);
@@ -263,7 +303,10 @@ class App extends React.Component {
 
 		return (
 			<div>
-				<Survey title="Super Questionário" questions={generic_questions}/>
+				<div className="add-button">
+					<button type="button" onClick={this.handleCreate}>+</button>
+				</div>	
+				<Survey title="Questionário" questions={generic_questions}/>
 			</div>
 		);
 	}
