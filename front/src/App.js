@@ -59,16 +59,16 @@ class Question extends React.Component {
 	}
 
 	handleDelete() {
-		let auxl = this.props.data.labels.filter(function(value, index, arr){ 
+		let auxl = this.props.data.labels.filter(function(value, index, arr){
 	        return index !== this.props.index;
 	    }.bind(this));
-	    let auxn = this.props.data.names.filter(function(value, index, arr){ 
+	    let auxn = this.props.data.names.filter(function(value, index, arr){
 	        return index !== this.props.index;
 	    }.bind(this));
-	    let auxt = this.props.data.types.filter(function(value, index, arr){ 
+	    let auxt = this.props.data.types.filter(function(value, index, arr){
 	        return index !== this.props.index;
 	    }.bind(this));
-	    let auxq = this.props.data.questions.filter(function(value, index, arr){ 
+	    let auxq = this.props.data.questions.filter(function(value, index, arr){
 	        return index !== this.props.index;
 	    }.bind(this));
 	    this.props.setter(auxl, auxn, auxt, auxq);
@@ -209,32 +209,24 @@ class App extends React.Component {
 
 		this.state = {
 			labels: [
-				"radio label",
-				"texto label",
-				"date label",
-				"texto label 2",
-				"texto label 3"
+				"Você pegou covid nos últimos 6 meses?",
+				"Descreva os sintomas que você sentiu",
+				"Dia que você fez o exame",
 			],
 			names: [
 				"radio",
 				"textoA",
 				"dateA",
-				"textoB",
-				"textoC"
 			],
 			types: [
 				QuestionType.boolean,
 				QuestionType.text,
 				QuestionType.date,
-				QuestionType.text,
-				QuestionType.text
 			],
 			questions: [
 				<BoolQuestion name="radio"/>,
 				<TextQuestion name="texto1"/>,
 				<DateQuestion name="date1"/>,
-				<TextQuestion name="texto2"/>,
-				<TextQuestion name="texto3"/>
 			],
 			list: true
 		};
