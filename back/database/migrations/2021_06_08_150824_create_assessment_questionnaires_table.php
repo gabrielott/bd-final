@@ -15,6 +15,9 @@ class CreateAssessmentQuestionnairesTable extends Migration
     {
         Schema::create('assessment_questionnaires', function (Blueprint $table) {
             $table->id();
+			$table->foreignId('participant_id')->constrained();
+			$table->foreignId('hospital_unit_id')->constrained();
+			$table->foreignId('questionnaire')->constrained();
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ class CreateGroupRolePermissionsTable extends Migration
     {
         Schema::create('group_role_permissions', function (Blueprint $table) {
             $table->id();
+			$table->foreignId('group_role_id')->constrained();
+			$table->foreignId('permission')->constrained();
             $table->timestamps();
         });
     }

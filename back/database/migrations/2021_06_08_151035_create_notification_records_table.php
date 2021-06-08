@@ -15,6 +15,14 @@ class CreateNotificationRecordsTable extends Migration
     {
         Schema::create('notification_records', function (Blueprint $table) {
             $table->id();
+			$table->foreignId('user_id')->constrained();
+			$table->foreignId('group_role_id')->constrained();
+			$table->foreignId('hospital_unit_id')->constrained();
+			$table->string('table_name');
+			$table->integer('row_id');
+			$table->timestamp('changed_on');
+			$table->string('operation');
+			$table->mediumText('log');
             $table->timestamps();
         });
     }

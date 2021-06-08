@@ -15,6 +15,7 @@ class CreateParticipantsTable extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
+			$table->string('medical_record');
             $table->timestamps();
         });
     }

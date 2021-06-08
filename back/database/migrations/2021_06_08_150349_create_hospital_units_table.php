@@ -15,6 +15,7 @@ class CreateHospitalUnitsTable extends Migration
     {
         Schema::create('hospital_units', function (Blueprint $table) {
             $table->id();
+			$table->string('hospital_unit_name');
             $table->timestamps();
         });
     }

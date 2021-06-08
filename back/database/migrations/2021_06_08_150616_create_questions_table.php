@@ -15,7 +15,18 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
+			$table->string('description');
+			$table->foreignId('question_type_id')->nullable()->constrained();
+			$table->foreignId('list_type_id')->nullable()->constrained();
+			$table->foreignId('question_group_id')->nullable()->constrained();
+			$table->unsignedBigInteger('subordinate_to')->nullable();
+			$table->unsignedBigInteger('is_about')->nullable();
             $table->timestamps();
+        });
+
+		Schema::table('questions', function (Blueprint $table) {
+            $table->foreign('subordinate_to')->references('id')->on('questions')->onDelete('set null');
+			$table->foreign('is_about')->references('id')->on('questions')->onDelete('set null');
         });
     }
 

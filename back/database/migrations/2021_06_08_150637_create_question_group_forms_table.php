@@ -15,6 +15,9 @@ class CreateQuestionGroupFormsTable extends Migration
     {
         Schema::create('question_group_forms', function (Blueprint $table) {
             $table->id();
+			$table->foreignId('crf_form_id')->constrained();
+			$table->foreignId('question_id')->constrained();
+			$table->integer('question_order');
             $table->timestamps();
         });
     }
