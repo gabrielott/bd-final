@@ -59,27 +59,21 @@ class Question extends React.Component {
 	}
 
 	handleDelete() {
-		console.log(`delete ${this.props.name}`);
+		let auxl = this.props.data.labels.filter(function(value, index, arr){ 
+	        return index !== this.props.index;
+	    }.bind(this));
+	    let auxn = this.props.data.names.filter(function(value, index, arr){ 
+	        return index !== this.props.index;
+	    }.bind(this));
+	    let auxt = this.props.data.types.filter(function(value, index, arr){ 
+	        return index !== this.props.index;
+	    }.bind(this));
+	    let auxq = this.props.data.questions.filter(function(value, index, arr){ 
+	        return index !== this.props.index;
+	    }.bind(this));
+	    this.props.setter(auxl, auxn, auxt, auxq);
+		console.log("delete "+this.props.index);
 	}
-
-	/*handleCreate() {
-		let question;
-		switch (type) {
-			case QuestionType.text:
-				question = <TextQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.boolean:
-				question = <BoolQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.date:
-				question = <DateQuestion name={this.props.name}/>;
-				break;
-			default:
-				break;
-		}
-
-		this.setState({question: question, label: label, type: type});
-	}*/
 
 	handleEdit(label, type) {
 		let question;
@@ -301,6 +295,24 @@ class App extends React.Component {
 		this.unique_iter++;
 	}
 
+	handleDelete(event) {
+		let auxl = this.state.labels;
+		auxl.push("label nova");
+		let auxn = this.state.names;
+		auxn.push("texto"+this.unique_iter);
+		let auxt = this.state.types;
+		auxt.push(QuestionType.text);
+		let auxq = this.state.questions;
+		auxq.push(<TextQuestion name="textonovo"/>);
+		this.setState({
+			labels: auxl,
+			names: auxn,
+			types: auxt,
+			questions: auxq
+		});
+		this.unique_iter++;
+	}
+
 	render() {
 
 		const generic_questions = this.state.questions.map((q, i) => {
@@ -312,6 +324,16 @@ class App extends React.Component {
 					key={this.state.names[i]}
 					type={this.state.types[i]}
 					onChange={this.handleInputChange}
+					data={this.state}
+					setter={(auxl, auxn, auxt, auxq)=>{
+						this.setState({
+							labels: auxl,
+							names: auxn,
+							types: auxt,
+							questions: auxq
+						});
+					}}
+					index={i}
 				/>
 			);
 		});
