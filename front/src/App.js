@@ -54,25 +54,7 @@ class Question extends React.Component {
 			type: this.props.type
 		};
 
-		this.handleDelete = this.handleDelete.bind(this);
 		this.handleEdit = this.handleEdit.bind(this);
-	}
-
-	handleDelete() {
-		let auxl = this.props.data.labels.filter(function(value, index, arr){ 
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxn = this.props.data.names.filter(function(value, index, arr){ 
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxt = this.props.data.types.filter(function(value, index, arr){ 
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxq = this.props.data.questions.filter(function(value, index, arr){ 
-	        return index !== this.props.index;
-	    }.bind(this));
-	    this.props.setter(auxl, auxn, auxt, auxq);
-		console.log("delete "+this.props.index);
 	}
 
 	handleEdit(label, type) {
@@ -104,9 +86,9 @@ class Question extends React.Component {
 					{this.state.question}
 				</div>
 				<QuestionPanel
-					onDelete={this.handleDelete}
+					onDelete={() => this.props.onDelete(this.props.index)}
+					// onDelete={() => console.log(this.props.index)}
 					onEdit={this.handleEdit}
-					onChange={this.handleInputChange}
 					label={this.props.label}
 					type={this.props.type}
 				/>
@@ -188,7 +170,6 @@ class QuestionPanel extends React.Component {
 			</div>
 		);
 	}
-
 }
 
 function Survey(props) {
@@ -243,6 +224,7 @@ class App extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	handleSubmit(event) {
@@ -280,26 +262,29 @@ class App extends React.Component {
 		this.unique_iter++;
 	}
 
-	handleDelete(event) {
-		let auxl = this.state.labels;
-		auxl.push("label nova");
-		let auxn = this.state.names;
-		auxn.push("texto"+this.unique_iter);
-		let auxt = this.state.types;
-		auxt.push(QuestionType.text);
-		let auxq = this.state.questions;
-		auxq.push(<TextQuestion name="textonovo"/>);
+	handleDelete(index) {
+		const labels = this.state.labels.slice();
+		const names = this.state.names.slice();
+		const types = this.state.types.slice();
+		const questions = this.state.questions.slice();
+
+		labels.splice(index, 1);
+		names.splice(index, 1);
+		types.splice(index, 1);
+		questions.splice(index, 1);
+
 		this.setState({
-			labels: auxl,
-			names: auxn,
-			types: auxt,
-			questions: auxq
+			labels: labels,
+			names: names,
+			types: types,
+			questions: questions,
 		});
-		this.unique_iter++;
+
+		console.log(`delete ${index}`);
 	}
 
-	render() {
 
+	render() {
 		const generic_questions = this.state.questions.map((q, i) => {
 			return (
 				<Question
@@ -309,15 +294,8 @@ class App extends React.Component {
 					key={this.state.names[i]}
 					type={this.state.types[i]}
 					onChange={this.handleInputChange}
+					onDelete={this.handleDelete}
 					data={this.state}
-					setter={(auxl, auxn, auxt, auxq)=>{
-						this.setState({
-							labels: auxl,
-							names: auxn,
-							types: auxt,
-							questions: auxq
-						});
-					}}
 					index={i}
 				/>
 			);
