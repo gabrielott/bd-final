@@ -135,14 +135,14 @@ class QuestionPanel extends React.Component {
 				</div>
 				<div className="question-panel-ordering">
 					<button
-						disabled={this.props.description.index === 0}
+						disabled={this.props.index === 0}
 						type="button"
 						onClick={this.props.onMoveUp}
 					>
 						/\
 					</button>
 					<button
-						disabled={this.props.description.index === this.props.numQuestions - 1}
+						disabled={this.props.index === this.props.numQuestions - 1}
 						type="button"
 						onClick={this.props.onMoveDown}
 					>
