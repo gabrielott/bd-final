@@ -61,3 +61,17 @@ input[type=submit] {
 	padding-top: .5em;
 	padding-bottom: .5em;
 }
+.list{
+	display: flex;
+	width: 30%;
+	height: 5%;
+	padding-left: 8%;
+	align-items: center;
+
+}
+
+.titleStyle{
+	width:60%;
+	height:30px;
+	font-size:30px
+}

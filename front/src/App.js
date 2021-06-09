@@ -43,8 +43,18 @@ function BoolQuestion(props) {
 		</div>
 	);
 }
+function TitleQuestion(props) {
+	return (
+		<div className="question-inner">
+			<label>
+				<input defaultValue={props.label} type="text" name={props.name}/>
+			</label>
+		</div>
+	);
+}
 
 function Question(props) {
+
 	return (
 		<div className="question">
 			<div className="question-left" onChange={props.onChange}>
@@ -155,11 +165,20 @@ class QuestionPanel extends React.Component {
 }
 
 function Survey(props) {
+
 	return (
 		<div className="survey">
-			<h1>{props.title}</h1>
 			<form onSubmit={props.onSubmit}>
+			<div  onChange={props.handleTitle}>
+				<input
+					className="titleStyle"
+					defaultValue={props.title}
+					type="text"
+					name="title"
+				/>
+			</div>
 				{props.questions}
+
 				<input type="submit"/>
 			</form>
 		</div>
@@ -171,6 +190,7 @@ class App extends React.Component {
 		super(props);
 
 		this.state = {
+			title: "Questionário",
 			items: [
 				{
 					label: "texto label 3",
@@ -203,6 +223,7 @@ class App extends React.Component {
 					question: <BoolQuestion name="radio"/>,
 				},
 			],
+			list: true,
 		};
 
 		this.unique_iter = 0;
@@ -214,10 +235,15 @@ class App extends React.Component {
 		this.handleDelete = this.handleDelete.bind(this);
 		this.handleMoveUp = this.handleMoveUp.bind(this);
 		this.handleMoveDown = this.handleMoveDown.bind(this);
+		this.handleNewForm = this.handleNewForm.bind(this);
+		this.handleList = this.handleList.bind(this);
+		this.handleTitle = this.handleTitle.bind(this);
+
 	}
 
 	handleSubmit(event) {
 		console.log(this.state.texto);
+		console.log(this.state.tilte)
 		event.preventDefault();
 	}
 
@@ -244,6 +270,11 @@ class App extends React.Component {
 
 		this.unique_iter++;
 		this.setState({items: items});
+	}
+	handleTitle(event){
+		//const target = event.target;
+		const title = event.target.value;
+		this.setState({title: title})
 	}
 
 	handleEdit(index, label, type) {
@@ -289,6 +320,14 @@ class App extends React.Component {
 		items[index + 1] = items.splice(index, 1, items[index + 1])[0];
 		this.setState({items: items});
 	}
+	handleNewForm(event){
+		this.setState({
+			items: [],
+		});
+	}
+	handleList(event){
+		this.setState({ list:false});
+	}
 
 	render() {
 		const generic_questions = this.state.items.map((item, i) => {
@@ -309,10 +348,32 @@ class App extends React.Component {
 
 		return (
 			<div>
+			<div className="list">
 				<div className="add-button">
 					<button type="button" onClick={this.handleCreate}>+</button>
-				</div>	
-				<Survey title="Questionário" questions={generic_questions}/>
+				</div>
+				<div className="add-button">
+					<button type="button" onClick={this.handleNewForm}>Criar Novo Formulário</button>
+				</div>
+				<div className="add-button">
+					<button type="button" onClick={this.handleList}>Listar Formulários</button>
+				</div>
+			</div>
+			{(this.state.list) &&
+			<div>
+				<Survey title={this.state.title} questions={generic_questions} handleTitle={this.handleTitle} />
+			</div>
+			}
+			{
+				(!this.state.list) &&
+				<div className="list">
+					<p> Questionário </p>
+					&nbsp;
+					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Selecionar</button>
+					&nbsp;
+					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Excluir Formulário</button>
+				</div>
+			}
 			</div>
 		);
 	}
