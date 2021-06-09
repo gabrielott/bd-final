@@ -43,76 +43,37 @@ function BoolQuestion(props) {
 		</div>
 	);
 }
+function TitleQuestion(props) {
+	return (
+		<div className="question-inner">
+			<label>
+				<input defaultValue={props.label} type="text" name={props.name}/>
+			</label>
+		</div>
+	);
+}
 
-class Question extends React.Component {
-	constructor(props) {
-		super(props);
+function Question(props) {
 
-		this.state = {
-			question: this.props.question,
-			label: this.props.label,
-			type: this.props.type
-		};
-
-		this.handleDelete = this.handleDelete.bind(this);
-		this.handleEdit = this.handleEdit.bind(this);
-	}
-
-	handleDelete() {
-		let auxl = this.props.data.labels.filter(function(value, index, arr){
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxn = this.props.data.names.filter(function(value, index, arr){
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxt = this.props.data.types.filter(function(value, index, arr){
-	        return index !== this.props.index;
-	    }.bind(this));
-	    let auxq = this.props.data.questions.filter(function(value, index, arr){
-	        return index !== this.props.index;
-	    }.bind(this));
-	    this.props.setter(auxl, auxn, auxt, auxq);
-		console.log("delete "+this.props.index);
-	}
-
-	handleEdit(label, type) {
-		let question;
-		switch (type) {
-			case QuestionType.text:
-				question = <TextQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.boolean:
-				question = <BoolQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.date:
-				question = <DateQuestion name={this.props.name}/>;
-				break;
-			default:
-				break;
-		}
-
-		this.setState({question: question, label: label, type: type});
-	}
-
-	render() {
-		return (
-			<div className="question">
-				<div className="question-left" onChange={this.props.onChange}>
-					<div className="question-title">
-						{this.state.label}
-					</div>
-					{this.state.question}
+	return (
+		<div className="question">
+			<div className="question-left" onChange={props.onChange}>
+				<div className="question-title">
+					{props.description.label}
 				</div>
-				<QuestionPanel
-					onDelete={this.handleDelete}
-					onEdit={this.handleEdit}
-					onChange={this.handleInputChange}
-					label={this.props.label}
-					type={this.props.type}
-				/>
+				{props.description.question}
 			</div>
-		);
-	}
+			<QuestionPanel
+				description={props.description}
+				index={props.index}
+				numQuestions={props.numQuestions}
+				onEdit={props.onEdit}
+				onDelete={() => props.onDelete(props.index)}
+				onMoveUp={() => props.onMoveUp(props.index)}
+				onMoveDown={() => props.onMoveDown(props.index)}
+			/>
+		</div>
+	);
 }
 
 class QuestionPanel extends React.Component {
@@ -120,8 +81,8 @@ class QuestionPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			label: this.props.label,
-			type: this.props.type,
+			label: this.props.description.label,
+			type: this.props.description.type,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -141,62 +102,83 @@ class QuestionPanel extends React.Component {
 
 
 	render() {
-		const popupStyle = {
-			width: "300px"
-			// height: "20%",
-		};
-
 		return (
 			<div className="question-panel">
-				<button type="button" onClick={this.props.onDelete}>Apagar</button>
-				<Popup
-					trigger={<button type="button">Editar</button>}
-					position="left center"
-					contentStyle={popupStyle}
-					closeOnDocumentClick
-				>
-					<form className="edit-popup" onChange={this.handleInputChange}>
-						<label>
-							Título:
-							<input
-								name="label"
-								type="text"
-								value={this.state.label}
-							/>
-						</label>
-						<div className="edit-radio">
+				<div className="question-panel-editing">
+					<button type="button" onClick={this.props.onDelete}>Apagar</button>
+					<Popup
+						trigger={<button type="button">Editar</button>}
+						position="left center"
+						contentStyle={{width: "300px"}}
+						closeOnDocumentClick
+					>
+						<form className="edit-popup" onChange={this.handleInputChange}>
 							<label>
-								<input name="type" type="radio" value={QuestionType.text}/>
-								Textual
+								Título:
+								<input
+									name="label"
+									type="text"
+									value={this.state.label}
+								/>
 							</label>
-							<label>
-								<input name="type" type="radio" value={QuestionType.boolean}/>
-								Booleano
-							</label>
-							<label>
-								<input name="type" type="radio" value={QuestionType.date}/>
-								Data
-							</label>
-						</div>
-						<button
-							type="button"
-							onClick={() => this.props.onEdit(this.state.label, this.state.type)}>
-							Salvar
-						</button>
-					</form>
-				</Popup>
+							<div className="edit-radio">
+								<label>
+									<input name="type" type="radio" value={QuestionType.text}/>
+									Textual
+								</label>
+								<label>
+									<input name="type" type="radio" value={QuestionType.boolean}/>
+									Booleano
+								</label>
+								<label>
+									<input name="type" type="radio" value={QuestionType.date}/>
+									Data
+								</label>
+							</div>
+							<button
+								type="button"
+								onClick={() => this.props.onEdit(this.props.index, this.state.label, this.state.type)}>
+								Salvar
+							</button>
+						</form>
+					</Popup>
+				</div>
+				<div className="question-panel-ordering">
+					<button
+						disabled={this.props.index === 0}
+						type="button"
+						onClick={this.props.onMoveUp}
+					>
+						/\
+					</button>
+					<button
+						disabled={this.props.index === this.props.numQuestions - 1}
+						type="button"
+						onClick={this.props.onMoveDown}
+					>
+						\/
+					</button>
+				</div>
 			</div>
 		);
 	}
-
 }
 
 function Survey(props) {
+
 	return (
 		<div className="survey">
-			<h1>{props.title}</h1>
 			<form onSubmit={props.onSubmit}>
+			<div  onChange={props.handleTitle}>
+				<input
+					className="titleStyle"
+					defaultValue={props.title}
+					type="text"
+					name="title"
+				/>
+			</div>
 				{props.questions}
+
 				<input type="submit"/>
 			</form>
 		</div>
@@ -208,27 +190,40 @@ class App extends React.Component {
 		super(props);
 
 		this.state = {
-			labels: [
-				"Você pegou covid nos últimos 6 meses?",
-				"Descreva os sintomas que você sentiu",
-				"Dia que você fez o exame",
+			title: "Questionário",
+			items: [
+				{
+					label: "texto label 3",
+					name: "textoC",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto3"/>
+				},
+				{
+					label: "texto label 2",
+					name: "textoB",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto2"/>,
+				},
+				{
+					label: "date label",
+					name: "dateA",
+					type: QuestionType.date,
+					question: <DateQuestion name="date1"/>,
+				},
+				{
+					label: "texto label",
+					name: "textoA",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto1"/>,
+				},
+				{
+					label: "radio label",
+					name: "radio",
+					type: QuestionType.boolean,
+					question: <BoolQuestion name="radio"/>,
+				},
 			],
-			names: [
-				"radio",
-				"textoA",
-				"dateA",
-			],
-			types: [
-				QuestionType.boolean,
-				QuestionType.text,
-				QuestionType.date,
-			],
-			questions: [
-				<BoolQuestion name="radio"/>,
-				<TextQuestion name="texto1"/>,
-				<DateQuestion name="date1"/>,
-			],
-			list: true
+			list: true,
 		};
 
 		this.unique_iter = 0;
@@ -236,13 +231,19 @@ class App extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
+		this.handleEdit = this.handleEdit.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
+		this.handleMoveUp = this.handleMoveUp.bind(this);
+		this.handleMoveDown = this.handleMoveDown.bind(this);
 		this.handleNewForm = this.handleNewForm.bind(this);
-
 		this.handleList = this.handleList.bind(this);
+		this.handleTitle = this.handleTitle.bind(this);
+
 	}
 
 	handleSubmit(event) {
 		console.log(this.state.texto);
+		console.log(this.state.tilte)
 		event.preventDefault();
 	}
 
@@ -257,82 +258,97 @@ class App extends React.Component {
 			[name]: value
 		});
 	}
+
+	handleCreate() {
+		const items = this.state.items.slice();
+		items.push({
+			label: "Nova pergunta",
+			name: this.unique_iter,
+			type: QuestionType.text,
+			question: <TextQuestion name={this.unique_iter}/>,
+		});
+
+		this.unique_iter++;
+		this.setState({items: items});
+	}
+	handleTitle(event){
+		//const target = event.target;
+		const title = event.target.value;
+		this.setState({title: title})
+	}
+
+	handleEdit(index, label, type) {
+		console.log(`edit index=${index} label=${label} type=${type}`)
+		const items = this.state.items.slice();
+		const item = this.state.items[index];
+
+		item.label = label;
+		item.type = type;
+		switch (item.type) {
+			case QuestionType.text:
+				item.question = <TextQuestion name={item.name}/>;
+				break;
+			case QuestionType.boolean:
+				item.question = <BoolQuestion name={item.name}/>;
+				break;
+			case QuestionType.date:
+				item.question = <DateQuestion name={item.name}/>;
+				break;
+			default:
+				break;
+		}
+
+		items[index] = item;
+		this.setState({items: items});
+	}
+
+
+	handleDelete(index) {
+		const items = this.state.items.slice();
+		items.splice(index, 1);
+		this.setState({items: items});
+	}
+
+	handleMoveUp(index) {
+		const items = this.state.items.slice();
+		items[index - 1] = items.splice(index, 1, items[index - 1])[0];
+		this.setState({items: items});
+	}
+
+	handleMoveDown(index) {
+		const items = this.state.items.slice();
+		items[index + 1] = items.splice(index, 1, items[index + 1])[0];
+		this.setState({items: items});
+	}
 	handleNewForm(event){
 		this.setState({
-			labels: [],
-			names: [],
-			types: [],
-			questions: []
+			items: [],
 		});
 	}
 	handleList(event){
-		this.setState({ list:false
-		});
-	}
-	handleCreate(event) {
-		let auxl = this.state.labels;
-		auxl.push("label nova");
-		let auxn = this.state.names;
-		auxn.push("texto"+this.unique_iter);
-		let auxt = this.state.types;
-		auxt.push(QuestionType.text);
-		let auxq = this.state.questions;
-		auxq.push(<TextQuestion name="textonovo"/>);
-		this.setState({
-			labels: auxl,
-			names: auxn,
-			types: auxt,
-			questions: auxq
-		});
-		this.unique_iter++;
-	}
-
-	handleDelete(event) {
-		let auxl = this.state.labels;
-		auxl.push("label nova");
-		let auxn = this.state.names;
-		auxn.push("texto"+this.unique_iter);
-		let auxt = this.state.types;
-		auxt.push(QuestionType.text);
-		let auxq = this.state.questions;
-		auxq.push(<TextQuestion name="textonovo"/>);
-		this.setState({
-			labels: auxl,
-			names: auxn,
-			types: auxt,
-			questions: auxq
-		});
-		this.unique_iter++;
+		this.setState({ list:false});
 	}
 
 	render() {
-
-		const generic_questions = this.state.questions.map((q, i) => {
+		const generic_questions = this.state.items.map((item, i) => {
 			return (
 				<Question
-					label={this.state.labels[i]}
-					question={q}
-					name={this.state.names[i]}
-					key={this.state.names[i]}
-					type={this.state.types[i]}
-					onChange={this.handleInputChange}
-					data={this.state}
-					setter={(auxl, auxn, auxt, auxq)=>{
-						this.setState({
-							labels: auxl,
-							names: auxn,
-							types: auxt,
-							questions: auxq
-						});
-					}}
+					description={item}
+					key={item.name}
 					index={i}
+					numQuestions={this.state.items.length}
+					onChange={this.handleInputChange}
+					onEdit={this.handleEdit}
+					onDelete={this.handleDelete}
+					onMoveUp={this.handleMoveUp}
+					onMoveDown={this.handleMoveDown}
 				/>
 			);
 		});
 
 		return (
 			<div>
-			<div className="temp">
+			<div className="list">
 				<div className="add-button">
 					<button type="button" onClick={this.handleCreate}>+</button>
 				</div>
@@ -345,15 +361,17 @@ class App extends React.Component {
 			</div>
 			{(this.state.list) &&
 			<div>
-				<Survey title="Questionário" questions={generic_questions}/>
+				<Survey title={this.state.title} questions={generic_questions} handleTitle={this.handleTitle} />
 			</div>
 			}
 			{
 				(!this.state.list) &&
-				<div className="temp">
+				<div className="list">
 					<p> Questionário </p>
 					&nbsp;
 					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Selecionar</button>
+					&nbsp;
+					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Excluir Formulário</button>
 				</div>
 			}
 			</div>

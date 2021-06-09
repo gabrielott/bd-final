@@ -33,7 +33,11 @@
 	width: 50vw;
 }
 
-.question-panel button {
+.question-panel {
+	display: flex;
+}
+
+.question-panel-editing button {
 	width: 100%;
 }
 
@@ -57,10 +61,17 @@ input[type=submit] {
 	padding-top: .5em;
 	padding-bottom: .5em;
 }
-.temp{
+.list{
 	display: flex;
-	width: 20%;
+	width: 30%;
 	height: 5%;
 	padding-left: 8%;
+	align-items: center;
 
+}
+
+.titleStyle{
+	width:60%;
+	height:30px;
+	font-size:30px
 }
