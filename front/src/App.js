@@ -267,7 +267,7 @@ class App extends React.Component {
 				break;
 		}
 
-		items.splice(index, 1, item);
+		items[index] = item;
 		this.setState({items: items});
 	}
 
