@@ -44,60 +44,26 @@ function BoolQuestion(props) {
 	);
 }
 
-class Question extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			question: this.props.question,
-			label: this.props.label,
-			type: this.props.type
-		};
-
-		this.handleEdit = this.handleEdit.bind(this);
-	}
-
-	handleEdit(label, type) {
-		let question;
-		switch (type) {
-			case QuestionType.text:
-				question = <TextQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.boolean:
-				question = <BoolQuestion name={this.props.name}/>;
-				break;
-			case QuestionType.date:
-				question = <DateQuestion name={this.props.name}/>;
-				break;
-			default:
-				break;
-		}
-
-		this.setState({question: question, label: label, type: type});
-	}
-
-	render() {
-		return (
-			<div className="question">
-				<div className="question-left" onChange={this.props.onChange}>
-					<div className="question-title">
-						{this.state.label}
-					</div>
-					{this.state.question}
+function Question(props) {
+	return (
+		<div className="question">
+			<div className="question-left" onChange={props.onChange}>
+				<div className="question-title">
+					{props.description.label}
 				</div>
-				<QuestionPanel
-					onDelete={() => this.props.onDelete(this.props.index)}
-					onEdit={this.handleEdit}
-					onMoveUp={() => this.props.onMoveUp(this.props.index)}
-					onMoveDown={() => this.props.onMoveDown(this.props.index)}
-					label={this.props.label}
-					type={this.props.type}
-					numQuestions={this.props.numQuestions}
-					index={this.props.index}
-				/>
+				{props.description.question}
 			</div>
-		);
-	}
+			<QuestionPanel
+				description={props.description}
+				index={props.index}
+				numQuestions={props.numQuestions}
+				onEdit={props.onEdit}
+				onDelete={() => props.onDelete(props.index)}
+				onMoveUp={() => props.onMoveUp(props.index)}
+				onMoveDown={() => props.onMoveDown(props.index)}
+			/>
+		</div>
+	);
 }
 
 class QuestionPanel extends React.Component {
@@ -105,8 +71,8 @@ class QuestionPanel extends React.Component {
 		super(props);
 
 		this.state = {
-			label: this.props.label,
-			type: this.props.type,
+			label: this.props.description.label,
+			type: this.props.description.type,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -161,7 +127,7 @@ class QuestionPanel extends React.Component {
 							</div>
 							<button
 								type="button"
-								onClick={() => this.props.onEdit(this.state.label, this.state.type)}>
+								onClick={() => this.props.onEdit(this.props.index, this.state.label, this.state.type)}>
 								Salvar
 							</button>
 						</form>
@@ -169,14 +135,14 @@ class QuestionPanel extends React.Component {
 				</div>
 				<div className="question-panel-ordering">
 					<button
-						disabled={this.props.index === 0}
+						disabled={this.props.description.index === 0}
 						type="button"
 						onClick={this.props.onMoveUp}
 					>
 						/\
 					</button>
 					<button
-						disabled={this.props.index === this.props.numQuestions - 1}
+						disabled={this.props.description.index === this.props.numQuestions - 1}
 						type="button"
 						onClick={this.props.onMoveDown}
 					>
@@ -205,34 +171,38 @@ class App extends React.Component {
 		super(props);
 
 		this.state = {
-			labels: [
-				"radio label",
-				"texto label",
-				"date label",
-				"texto label 2",
-				"texto label 3"
+			items: [
+				{
+					label: "texto label 3",
+					name: "textoC",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto3"/>
+				},
+				{
+					label: "texto label 2",
+					name: "textoB",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto2"/>,
+				},
+				{
+					label: "date label",
+					name: "dateA",
+					type: QuestionType.date,
+					question: <DateQuestion name="date1"/>,
+				},
+				{
+					label: "texto label",
+					name: "textoA",
+					type: QuestionType.text,
+					question: <TextQuestion name="texto1"/>,
+				},
+				{
+					label: "radio label",
+					name: "radio",
+					type: QuestionType.boolean,
+					question: <BoolQuestion name="radio"/>,
+				},
 			],
-			names: [
-				"radio",
-				"textoA",
-				"dateA",
-				"textoB",
-				"textoC"
-			],
-			types: [
-				QuestionType.boolean,
-				QuestionType.text,
-				QuestionType.date,
-				QuestionType.text,
-				QuestionType.text
-			],
-			questions: [
-				<BoolQuestion name="radio"/>,
-				<TextQuestion name="texto1"/>,
-				<DateQuestion name="date1"/>,
-				<TextQuestion name="texto2"/>,
-				<TextQuestion name="texto3"/>
-			]
 		};
 
 		this.unique_iter = 0;
@@ -240,6 +210,7 @@ class App extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
+		this.handleEdit = this.handleEdit.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 		this.handleMoveUp = this.handleMoveUp.bind(this);
 		this.handleMoveDown = this.handleMoveDown.bind(this);
@@ -262,103 +233,76 @@ class App extends React.Component {
 		});
 	}
 
-	handleCreate(event) {
-		let auxl = this.state.labels;
-		auxl.push("label nova");
-		let auxn = this.state.names;
-		auxn.push("texto"+this.unique_iter);
-		let auxt = this.state.types;
-		auxt.push(QuestionType.text);
-		let auxq = this.state.questions;
-		auxq.push(<TextQuestion name="textonovo"/>);
-		this.setState({
-			labels: auxl,
-			names: auxn,
-			types: auxt,
-			questions: auxq
+	handleCreate() {
+		const items = this.state.items.slice();
+		items.push({
+			label: "Nova pergunta",
+			name: this.unique_iter,
+			type: QuestionType.text,
+			question: <TextQuestion name={this.unique_iter}/>,
 		});
+
 		this.unique_iter++;
+		this.setState({items: items});
 	}
 
+	handleEdit(index, label, type) {
+		console.log(`edit index=${index} label=${label} type=${type}`)
+		const items = this.state.items.slice();
+		const item = this.state.items[index];
+
+		item.label = label;
+		item.type = type;
+		switch (item.type) {
+			case QuestionType.text:
+				item.question = <TextQuestion name={item.name}/>;
+				break;
+			case QuestionType.boolean:
+				item.question = <BoolQuestion name={item.name}/>;
+				break;
+			case QuestionType.date:
+				item.question = <DateQuestion name={item.name}/>;
+				break;
+			default:
+				break;
+		}
+
+		items.splice(index, 1, item);
+		this.setState({items: items});
+	}
+
+
 	handleDelete(index) {
-		const labels = this.state.labels.slice();
-		const names = this.state.names.slice();
-		const types = this.state.types.slice();
-		const questions = this.state.questions.slice();
-
-		labels.splice(index, 1);
-		names.splice(index, 1);
-		types.splice(index, 1);
-		questions.splice(index, 1);
-
-		this.setState({
-			labels: labels,
-			names: names,
-			types: types,
-			questions: questions,
-		});
-
-		console.log(`delete ${index}`);
+		const items = this.state.items.slice();
+		items.splice(index, 1);
+		this.setState({items: items});
 	}
 
 	handleMoveUp(index) {
-		console.log(`up ${index}`);
-
-		const labels = this.state.labels.slice();
-		const names = this.state.names.slice();
-		const types = this.state.types.slice();
-		const questions = this.state.questions.slice();
-
-		labels[index - 1] = labels.splice(index, 1, labels[index - 1])[0]
-		names[index - 1] = names.splice(index, 1, names[index - 1])[0]
-		types[index - 1] = types.splice(index, 1, types[index - 1])[0]
-		questions[index - 1] = questions.splice(index, 1, questions[index - 1])[0]
-
-		this.setState({
-			labels: labels,
-			names: names,
-			types: types,
-			questions: questions,
-		});
+		const items = this.state.items.slice();
+		items[index - 1] = items.splice(index, 1, items[index - 1])[0];
+		this.setState({items: items});
 	}
 
 	handleMoveDown(index) {
-		console.log(`down ${index}`);
-
-		const labels = this.state.labels.slice();
-		const names = this.state.names.slice();
-		const types = this.state.types.slice();
-		const questions = this.state.questions.slice();
-
-		labels[index + 1] = labels.splice(index, 1, labels[index + 1])[0]
-		names[index + 1] = names.splice(index, 1, names[index + 1])[0]
-		types[index + 1] = types.splice(index, 1, types[index + 1])[0]
-		questions[index + 1] = questions.splice(index, 1, questions[index + 1])[0]
-
-		this.setState({
-			labels: labels,
-			names: names,
-			types: types,
-			questions: questions,
-		});
+		const items = this.state.items.slice();
+		items[index + 1] = items.splice(index, 1, items[index + 1])[0];
+		this.setState({items: items});
 	}
 
 	render() {
-		const generic_questions = this.state.questions.map((q, i) => {
+		const generic_questions = this.state.items.map((item, i) => {
 			return (
 				<Question
-					label={this.state.labels[i]}
-					question={q}
-					name={this.state.names[i]}
-					key={this.state.names[i]}
-					type={this.state.types[i]}
+					description={item}
+					key={item.name}
+					index={i}
+					numQuestions={this.state.items.length}
 					onChange={this.handleInputChange}
+					onEdit={this.handleEdit}
 					onDelete={this.handleDelete}
 					onMoveUp={this.handleMoveUp}
 					onMoveDown={this.handleMoveDown}
-					data={this.state}
-					index={i}
-					numQuestions={this.state.labels.length}
 				/>
 			);
 		});
