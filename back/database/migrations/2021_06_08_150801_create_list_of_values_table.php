@@ -16,6 +16,7 @@ class CreateListOfValuesTable extends Migration
         Schema::create('list_of_values', function (Blueprint $table) {
             $table->id();
 			$table->foreignId('list_type_id');
+            $table->string('description');
             $table->timestamps();
         });
     }

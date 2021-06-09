@@ -16,7 +16,8 @@ class CreateMultiLanguagesTable extends Migration
         Schema::create('multi_languages', function (Blueprint $table) {
             $table->id();
 			$table->foreignId('language_id')->constrained();
-			$table->string('description')->unique();
+			$table->mediumText('description')->unique();
+            $table->mediumText('description_lang');
             $table->timestamps();
         });
     }
