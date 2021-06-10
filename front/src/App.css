@@ -1,77 +1,101 @@
-.add-button {
-	margin: 20px;
-	margin-right: 9%;
-	float: right;
+html {
+	background-color: #101010;
+}
+
+.survey {
+	display: flex;
+	margin: 5%;
+	border-radius: 15px;
+	background-color: #282828;
+	flex-direction: column;
+}
+
+.survey-tail {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.survey-header {
+	margin: 1%;
+}
+
+.survey-header input {
+	font-size: 2em;
+}
+
+.module {
+	display: flex;
+	flex-direction: column;
+	padding: 2%;
+	border-radius: 15px;
+	background-color: #585858;
+}
+
+.module-header {
+	margin: 1%;
+}
+
+.module-body {
+	padding-left: 4%;
+}
+
+.module-header input {
+	font-size: 1.5em;
+}
+
+.module-tail {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.group {
+	display: flex;
+	flex-direction: column;
+	padding: 2%;
+	border-radius: 15px;
+	background-color: #C0C0C0;
+	margin-bottom: 2%;
+}
+
+.group-header {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin: 1%;
+}
+
+.group-header input {
+	font-size: 1.25em;
+	margin: 0.5%;
+}
+
+.group-body {
+	padding-left: 4%;
+}
+
+.group-tail {
+	display: flex;
+	flex-direction: row-reverse;
 }
 
 .question {
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background-color: lightgrey;
-	margin: 3%;
-	padding: 2%;
-	padding-left: 8%;
-	border-radius: 10px;
-}
-
-.question-title {
-	text-align: left;
-	font-size: 1.5em;
-}
-
-.question-inner {
-	display: flex;
-	justify-content: flex-start;
-}
-
-.question-left {
-	width: 100%;
-}
-
-.question-left input[type=text] {
-	width: 50vw;
-}
-
-.question-panel {
-	display: flex;
-}
-
-.question-panel-editing button {
-	width: 100%;
-}
-
-.survey {
-	margin: 5em;
-	text-align: center;
-}
-
-.edit-popup {
-	display: flex;
 	flex-direction: column;
+	padding: 2%;
+	margin-bottom: 2%;
+	border-radius: 15px;
+	background-color: #F0F0F0;
 }
 
-.edit-radio {
-	text-align: center;
+.question-header input {
+	font-size: 1.1em;
 }
 
-input[type=submit] {
-	padding-left: 3em;
-	padding-right: 3em;
-	padding-top: .5em;
-	padding-bottom: .5em;
-}
-.list{
+.question-body {
 	display: flex;
-	width: 30%;
-	height: 5%;
-	padding-left: 8%;
-	align-items: center;
-
 }
 
-.titleStyle{
-	width:60%;
-	height:30px;
-	font-size:30px
+.question-tail {
+	display: flex;
+	flex-direction: row-reverse;
 }

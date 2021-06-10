@@ -3,380 +3,461 @@ import Popup from "reactjs-popup";
 import './App.css';
 import "reactjs-popup/dist/index.css";
 
-const QuestionType = Object.freeze({
-	text: "1",
-	boolean: "2",
-	date: "3"
-});
+const modules = {
+	id: "1",
+	description: "Descrição módulo",
+	groups: [
+		{
+			id: "1",
+			description: "Descrição grupo",
+			comment: "Comentário grupo",
+			questions: [
+				{
+					id: "1",
+					description: "Descrição pergunta",
+					type: {
+						id: "1",
+						description: "Tipo de pergunta",
+					},
+					list_type: {
+						id: "1",
+						description: "Tipo de lista",
+					},
+				},
+				{
+					id: "2",
+					description: "Descrição pergunta 2",
+					type_id: "1",
+				},
+			],
+		},
+	],
+};
 
-function TextQuestion(props) {
+class Survey extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			description: this.props.description,
+			modules: this.props.modules,
+		};
+
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleSave = this.handleSave.bind(this);
+		this.handleModuleChange = this.handleModuleChange.bind(this);
+		this.handleGroupChange = this.handleGroupChange.bind(this);
+		this.handleQuestionChange = this.handleQuestionChange.bind(this);
+		this.handleCreateModule = this.handleCreateModule.bind(this);
+		this.handleCreateGroup = this.handleCreateGroup.bind(this);
+		this.handleCreateQuestion = this.handleCreateQuestion.bind(this);
+		this.handleDeleteModule = this.handleDeleteModule.bind(this);
+		this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
+		this.handleDeleteQuestion = this.handleDeleteQuestion.bind(this);
+	}
+
+	handleInputChange(event) {
+		const target = event.target;
+		const value = target.value;
+		const name = target.name;
+
+		this.setState({
+			[name]: value,
+		});
+
+		console.log(`survey: ${name} = ${value}`);
+	}
+
+	handleSave() {
+		console.log("survey: save");
+	}
+
+	handleModuleChange(moduleIndex, name, value) {
+		console.log(`module=${moduleIndex}`)
+		console.log(`name=${name} value=${value}`);
+
+		const modules = this.state.modules.slice();
+		const module = modules[moduleIndex];
+
+		module[name] = value;
+		this.setState({modules: modules});
+	}
+
+	handleGroupChange(moduleIndex, groupIndex, name, value) {
+		console.log(`module=${moduleIndex} group=${groupIndex}`)
+		console.log(`name=${name} value=${value}`);
+
+		const modules = this.state.modules.slice();
+		const group = modules[moduleIndex].groups[groupIndex];
+
+		group[name] = value;
+		this.setState({modules: modules});
+
+	}
+
+	handleQuestionChange(moduleIndex, groupIndex, questionIndex, name, value) {
+		console.log(`module=${moduleIndex} group=${groupIndex} question=${questionIndex}`)
+		console.log(`name=${name} value=${value}`);
+
+		const modules = this.state.modules.slice();
+		const question = modules[moduleIndex].groups[groupIndex].questions[questionIndex];
+
+		question[name] = value;
+		this.setState({modules: modules});
+	}
+
+	handleCreateModule() {
+		const modules = this.state.modules.slice();
+
+		modules.push({
+			description: "Novo módulo",
+			groups: [],
+		});
+		this.setState({modules: modules});
+	}
+
+	handleCreateGroup(moduleIndex) {
+		const modules = this.state.modules.slice();
+		const groups = modules[moduleIndex].groups;
+
+		groups.push({
+			description: "Novo grupo",
+			comment: "Novo comentário",
+			questions: [],
+		});
+		this.setState({modules: modules});
+	}
+
+	handleCreateQuestion(moduleIndex, groupIndex) {
+		const modules = this.state.modules.slice();
+		const questions = modules[moduleIndex].groups[groupIndex].questions;
+
+		questions.push({
+			description: "Nova pergunta",
+			type: 1,
+			list_type: 1,
+		});
+		this.setState({modules: modules});
+	}
+
+	handleDeleteModule(moduleIndex) {
+		const modules = this.state.modules.slice();
+		modules.splice(moduleIndex, 1);
+		this.setState({modules: modules});
+	}
+
+	handleDeleteGroup(moduleIndex, groupIndex) {
+		const modules = this.state.modules.slice();
+		modules[moduleIndex].groups.splice(groupIndex, 1);
+		this.setState({modules: modules});
+	}
+
+	handleDeleteQuestion(moduleIndex, groupIndex, questionIndex) {
+		const modules = this.state.modules.slice();
+		modules[moduleIndex].groups[groupIndex].questions.splice(questionIndex, 1);
+		this.setState({modules: modules});
+	}
+
+	render() {
+		const modules = this.state.modules.map((m, i) =>
+			<Module
+				key={i}
+				index={i}
+				description={m.description}
+				groups={m.groups}
+				types={this.props.types}
+				list_types={this.props.list_types}
+				onModuleChange={this.handleModuleChange}
+				onGroupChange={this.handleGroupChange}
+				onQuestionChange={this.handleQuestionChange}
+				onCreateGroup={this.handleCreateGroup}
+				onCreateQuestion={this.handleCreateQuestion}
+				onDeleteModule={this.handleDeleteModule}
+				onDeleteGroup={this.handleDeleteGroup}
+				onDeleteQuestion={this.handleDeleteQuestion}
+			/>
+		);
+
+		return (
+			<div className="survey">
+				<div className="survey-header">
+					<input
+						className="titleStyle"
+						type="text"
+						name="description"
+						value={this.state.description}
+						onChange={this.handleInputChange}
+					/>
+				</div>
+				<div className="survey-body">
+					{modules}
+					<button type="button" onClick={this.handleSave}>
+						Salvar
+					</button>
+				</div>
+				<div className="survey-tail">
+					<button
+						type="button"
+						onClick={this.handleCreateModule}>
+						Novo módulo
+					</button>
+				</div>
+			</div>
+		);
+	}
+}
+
+function Module(props) {
+	function handleInputChange(event) {
+		const target = event.target;
+		const value = target.value;
+		const name = target.name;
+
+		props.onModuleChange(
+			props.index,
+			name,
+			value
+		);
+	}
+
+	const groups = props.groups.map((g, i) =>
+		<Group
+			key={i}
+			index={i}
+			moduleIndex={props.index}
+			description={g.description}
+			comment={g.comment}
+			questions={g.questions}
+			types={props.types}
+			list_types={props.list_types}
+			onGroupChange={props.onGroupChange}
+			onQuestionChange={props.onQuestionChange}
+			onCreateQuestion={props.onCreateQuestion}
+			onDeleteGroup={props.onDeleteGroup}
+			onDeleteQuestion={props.onDeleteQuestion}
+		/>
+	);
+
 	return (
-		<div className="question-inner">
-			<label>
-				<input defaultValue={props.label} type="text" name={props.name}/>
-			</label>
+		<div className="module">
+			<div className="module-header" >
+				<input
+					type="text"
+					name="description"
+					value={props.description}
+					onChange={handleInputChange}
+				/>
+			</div>
+			<div className="module-body">
+				{groups}
+			</div>
+			<div className="module-tail">
+				<button
+					type="button"
+					onClick={() => props.onCreateGroup(props.index)}>
+					Novo grupo
+				</button>
+				<button
+					type="button"
+					onClick={() => props.onDeleteModule(props.index)}
+					disabled={props.index === 0}
+				>
+					Deletar módulo
+				</button>
+			</div>
 		</div>
 	);
 }
 
-function DateQuestion(props) {
-	return (
-		<div className="question-inner">
-			<label>
-				<input defaultValue={props.label} type="date" name={props.name}/>
-			</label>
-		</div>
-	);
-}
+function Group(props) {
+	function handleInputChange(event) {
+		const target = event.target;
+		const value = target.value;
+		const name = target.name;
 
-function BoolQuestion(props) {
-	return (
-		<div className="question-inner">
-			<label>
-				<input type="radio" value="true" name={props.name}/>
-				Sim
-			</label>
-			<label>
-				<input type="radio" value="false" name={props.name}/>
-				Não
-			</label>
-		</div>
+		props.onGroupChange(
+			props.moduleIndex,
+			props.index,
+			name,
+			value
+		);
+	}
+
+	const questions = props.questions.map((q, i) =>
+		<Question
+			key={i}
+			index={i}
+			moduleIndex={props.moduleIndex}
+			groupIndex={props.index}
+			description={q.description}
+			type={q.type}
+			list_type={q.list_type}
+			types={props.types}
+			list_types={props.list_types}
+			onQuestionChange={props.onQuestionChange}
+			onDeleteQuestion={props.onDeleteQuestion}
+		/>
 	);
-}
-function TitleQuestion(props) {
+
 	return (
-		<div className="question-inner">
-			<label>
-				<input defaultValue={props.label} type="text" name={props.name}/>
-			</label>
+		<div className="group">
+			<div className="group-header" >
+				<input
+					type="text"
+					name="description"
+					value={props.description}
+					onChange={handleInputChange}
+				/>
+				<input
+					type="text"
+					name="comment"
+					value={props.comment}
+					onChange={handleInputChange}
+				/>
+			</div>
+			<div className="group-body">
+				{questions}
+			</div>
+			<div className="group-tail">
+				<button
+					type="button"
+					onClick={() => props.onCreateQuestion(props.moduleIndex, props.index)}>
+					Nova pergunta
+				</button>
+				<button
+					type="button"
+					onClick={() => props.onDeleteGroup(props.moduleIndex, props.index)}
+					disabled={props.index === 0}
+				>
+					Apagar grupo
+				</button>
+			</div>
 		</div>
 	);
 }
 
 function Question(props) {
+	function handleInputChange(event) {
+		const target = event.target;
+		const value = target.value;
+		const name = target.name;
+
+		props.onQuestionChange(
+			props.moduleIndex,
+			props.groupIndex,
+			props.index,
+			name,
+			value
+		);
+	}
+
+	const type_options = props.types.map((t) =>
+		<option value={t.id} key={t.id}>
+			{t.description}
+		</option>
+	);
+
+	const list_type_options = props.list_types.map((t) =>
+		<option value={t.id} key={t.id}>
+			{t.description}
+		</option>
+	);
 
 	return (
 		<div className="question">
-			<div className="question-left" onChange={props.onChange}>
-				<div className="question-title">
-					{props.description.label}
-				</div>
-				{props.description.question}
+			<div className="question-header" >
+				<input
+					type="text"
+					name="description"
+					value={props.description}
+					onChange={handleInputChange}
+				/>
 			</div>
-			<QuestionPanel
-				description={props.description}
-				index={props.index}
-				numQuestions={props.numQuestions}
-				onEdit={props.onEdit}
-				onDelete={() => props.onDelete(props.index)}
-				onMoveUp={() => props.onMoveUp(props.index)}
-				onMoveDown={() => props.onMoveDown(props.index)}
-			/>
+			<div className="question-body">
+				<select
+					name="type"
+					onChange={handleInputChange}
+				>
+					{type_options}
+				</select>
+				<select
+					name="list_type"
+					onChange={handleInputChange}
+				>
+					{list_type_options}
+				</select>
+			</div>
+			<div className="question-tail">
+				<button
+					type="button"
+					onClick={() => props.onDeleteQuestion(props.moduleIndex, props.groupIndex, props.index)}
+					disabled={props.index === 0}
+				>
+					Apagar pergunta
+				</button>
+			</div>
 		</div>
 	);
 }
 
-class QuestionPanel extends React.Component {
-	constructor(props) {
-		super(props);
+function App(props) {
+	const types = [
+		{
+			id: "1",
+			description: "tipo 1",
+		},
+		{
+			id: "2",
+			description: "tipo 2",
+		},
+		{
+			id: "3",
+			description: "tipo 3",
+		},
+	];
 
-		this.state = {
-			label: this.props.description.label,
-			type: this.props.description.type,
-		};
+	const list_types = [
+		{
+			id: "1",
+			description: "lista tipo 1",
+		},
+		{
+			id: "2",
+			description: "lista tipo 2",
+		},
+		{
+			id: "3",
+			description: "lista tipo 3",
+		},
+	];
 
-		this.handleInputChange = this.handleInputChange.bind(this);
+	const question = {
+		description: "Uma pergunta",
+		type: 1,
+		list_type: 1,
 	}
 
-	handleInputChange(event) {
-		const target = event.target;
-		const value = (target.type === "checkbox") ? target.checked : target.value;
-		const name = target.name;
-
-		console.log(`${name} = ${value}`);
-
-		this.setState({
-			[name]: value
-		});
+	const group = {
+		description: "Um grupo",
+		comment: "Comentando sobre o grupo",
+		questions: [question],
 	}
 
-
-	render() {
-		return (
-			<div className="question-panel">
-				<div className="question-panel-editing">
-					<button type="button" onClick={this.props.onDelete}>Apagar</button>
-					<Popup
-						trigger={<button type="button">Editar</button>}
-						position="left center"
-						contentStyle={{width: "300px"}}
-						closeOnDocumentClick
-					>
-						<form className="edit-popup" onChange={this.handleInputChange}>
-							<label>
-								Título:
-								<input
-									name="label"
-									type="text"
-									value={this.state.label}
-								/>
-							</label>
-							<div className="edit-radio">
-								<label>
-									<input name="type" type="radio" value={QuestionType.text}/>
-									Textual
-								</label>
-								<label>
-									<input name="type" type="radio" value={QuestionType.boolean}/>
-									Booleano
-								</label>
-								<label>
-									<input name="type" type="radio" value={QuestionType.date}/>
-									Data
-								</label>
-							</div>
-							<button
-								type="button"
-								onClick={() => this.props.onEdit(this.props.index, this.state.label, this.state.type)}>
-								Salvar
-							</button>
-						</form>
-					</Popup>
-				</div>
-				<div className="question-panel-ordering">
-					<button
-						disabled={this.props.index === 0}
-						type="button"
-						onClick={this.props.onMoveUp}
-					>
-						/\
-					</button>
-					<button
-						disabled={this.props.index === this.props.numQuestions - 1}
-						type="button"
-						onClick={this.props.onMoveDown}
-					>
-						\/
-					</button>
-				</div>
-			</div>
-		);
+	const module = {
+		description: "Um módulo",
+		groups: [group],
 	}
-}
-
-function Survey(props) {
 
 	return (
 		<div className="survey">
-			<form onSubmit={props.onSubmit}>
-			<div  onChange={props.handleTitle}>
-				<input
-					className="titleStyle"
-					defaultValue={props.title}
-					type="text"
-					name="title"
-				/>
-			</div>
-				{props.questions}
-
-				<input type="submit"/>
-			</form>
+			<Survey
+				description="Title"
+				modules={[module]}
+				types={types}
+				list_types={list_types}
+			/>
 		</div>
 	);
-}
-
-class App extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			title: "Questionário",
-			items: [
-				{
-					label: "texto label 3",
-					name: "textoC",
-					type: QuestionType.text,
-					question: <TextQuestion name="texto3"/>
-				},
-				{
-					label: "texto label 2",
-					name: "textoB",
-					type: QuestionType.text,
-					question: <TextQuestion name="texto2"/>,
-				},
-				{
-					label: "date label",
-					name: "dateA",
-					type: QuestionType.date,
-					question: <DateQuestion name="date1"/>,
-				},
-				{
-					label: "texto label",
-					name: "textoA",
-					type: QuestionType.text,
-					question: <TextQuestion name="texto1"/>,
-				},
-				{
-					label: "radio label",
-					name: "radio",
-					type: QuestionType.boolean,
-					question: <BoolQuestion name="radio"/>,
-				},
-			],
-			list: true,
-		};
-
-		this.unique_iter = 0;
-
-		this.handleInputChange = this.handleInputChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleCreate = this.handleCreate.bind(this);
-		this.handleEdit = this.handleEdit.bind(this);
-		this.handleDelete = this.handleDelete.bind(this);
-		this.handleMoveUp = this.handleMoveUp.bind(this);
-		this.handleMoveDown = this.handleMoveDown.bind(this);
-		this.handleNewForm = this.handleNewForm.bind(this);
-		this.handleList = this.handleList.bind(this);
-		this.handleTitle = this.handleTitle.bind(this);
-
-	}
-
-	handleSubmit(event) {
-		console.log(this.state.texto);
-		console.log(this.state.tilte)
-		event.preventDefault();
-	}
-
-	handleInputChange(event) {
-		const target = event.target;
-		const value = (target.type === "checkbox") ? target.checked : target.value;
-		const name = target.name;
-
-		console.log(`${name} = ${value}`);
-
-		this.setState({
-			[name]: value
-		});
-	}
-
-	handleCreate() {
-		const items = this.state.items.slice();
-		items.push({
-			label: "Nova pergunta",
-			name: this.unique_iter,
-			type: QuestionType.text,
-			question: <TextQuestion name={this.unique_iter}/>,
-		});
-
-		this.unique_iter++;
-		this.setState({items: items});
-	}
-	handleTitle(event){
-		//const target = event.target;
-		const title = event.target.value;
-		this.setState({title: title})
-	}
-
-	handleEdit(index, label, type) {
-		console.log(`edit index=${index} label=${label} type=${type}`)
-		const items = this.state.items.slice();
-		const item = this.state.items[index];
-
-		item.label = label;
-		item.type = type;
-		switch (item.type) {
-			case QuestionType.text:
-				item.question = <TextQuestion name={item.name}/>;
-				break;
-			case QuestionType.boolean:
-				item.question = <BoolQuestion name={item.name}/>;
-				break;
-			case QuestionType.date:
-				item.question = <DateQuestion name={item.name}/>;
-				break;
-			default:
-				break;
-		}
-
-		items[index] = item;
-		this.setState({items: items});
-	}
-
-
-	handleDelete(index) {
-		const items = this.state.items.slice();
-		items.splice(index, 1);
-		this.setState({items: items});
-	}
-
-	handleMoveUp(index) {
-		const items = this.state.items.slice();
-		items[index - 1] = items.splice(index, 1, items[index - 1])[0];
-		this.setState({items: items});
-	}
-
-	handleMoveDown(index) {
-		const items = this.state.items.slice();
-		items[index + 1] = items.splice(index, 1, items[index + 1])[0];
-		this.setState({items: items});
-	}
-	handleNewForm(event){
-		this.setState({
-			items: [],
-		});
-	}
-	handleList(event){
-		this.setState({ list:false});
-	}
-
-	render() {
-		const generic_questions = this.state.items.map((item, i) => {
-			return (
-				<Question
-					description={item}
-					key={item.name}
-					index={i}
-					numQuestions={this.state.items.length}
-					onChange={this.handleInputChange}
-					onEdit={this.handleEdit}
-					onDelete={this.handleDelete}
-					onMoveUp={this.handleMoveUp}
-					onMoveDown={this.handleMoveDown}
-				/>
-			);
-		});
-
-		return (
-			<div>
-			<div className="list">
-				<div className="add-button">
-					<button type="button" onClick={this.handleCreate}>+</button>
-				</div>
-				<div className="add-button">
-					<button type="button" onClick={this.handleNewForm}>Criar Novo Formulário</button>
-				</div>
-				<div className="add-button">
-					<button type="button" onClick={this.handleList}>Listar Formulários</button>
-				</div>
-			</div>
-			{(this.state.list) &&
-			<div>
-				<Survey title={this.state.title} questions={generic_questions} handleTitle={this.handleTitle} />
-			</div>
-			}
-			{
-				(!this.state.list) &&
-				<div className="list">
-					<p> Questionário </p>
-					&nbsp;
-					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Selecionar</button>
-					&nbsp;
-					<button className="add-button" type="button" onClick={() => {window.location.reload()}}>Excluir Formulário</button>
-				</div>
-			}
-			</div>
-		);
-	}
 }
 
 export default App;
