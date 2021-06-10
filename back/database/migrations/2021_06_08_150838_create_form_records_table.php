@@ -15,9 +15,7 @@ class CreateFormRecordsTable extends Migration
     {
         Schema::create('form_records', function (Blueprint $table) {
             $table->id();
-			$table->foreignId('participant_id')->constrained();
-			$table->foreignId('hospital_unit_id')->constrained();
-			$table->foreignId('questionnaire_id')->constrained();
+			$table->foreignId('assessment_questionnaire_id')->constrained();
 			$table->foreignId('crf_form_id')->constrained();
 			$table->timestamp('dt_registro_form');
             $table->timestamps();

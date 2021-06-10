@@ -16,8 +16,7 @@ class CreateQuestionGroupFormRecordsTable extends Migration
         Schema::create('question_group_form_records', function (Blueprint $table) {
             $table->id();
 			$table->foreignId('form_record_id')->constrained();
-			$table->foreignId('crf_form_id')->constrained();
-			$table->foreignId('question_id')->constrained();
+			$table->foreignId('question_group_form_id')->constrained();
 			$table->foreignId('list_of_value_id')->nullable()->constrained()->onDelete('set null');
 			$table->string('answer')->nullable();
             $table->timestamps();
