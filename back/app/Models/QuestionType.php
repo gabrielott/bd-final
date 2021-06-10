@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionType extends Model
 {
     use HasFactory;
+
+    public function createQuestionType($request) {
+        $this->description = $request->description;
+        $this->save();
+    }
+
+    public function updateQuestionType($request){
+        if($request->description){
+            $this->description = $request->description;
+        }
+        $this->save();
+    }
+    public function questions(){
+        return $this->hasMany('App\Models\Question');
+    }
 }

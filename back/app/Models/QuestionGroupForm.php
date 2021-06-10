@@ -8,4 +8,28 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionGroupForm extends Model
 {
     use HasFactory;
+
+    public function createQuestionGroupForm($request) {
+        $this->crf_form_id = $request->crf_form_id;
+        $this->question_id = $request->question_id;
+        $this->question_order = $request->question_order;
+        $this->save();
+    }
+
+    public function updateQuestion($request) {
+        if($request->question_order){
+            $this->question_order = $request->question_order;
+        }
+        $this->save();
+    }
+    public function question(){
+        return $this->belongsTo('App\Models\Question');
+    }
+
+    public function questionGroupFormRecord(){
+        return $this->belongsTo('App\Models\QuestionGroupFormRecord');
+    }
+    public function crfForm(){
+        return $this->belongsTo('App\Models\CRFForms');
+    }
 }
