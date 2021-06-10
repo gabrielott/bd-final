@@ -14,31 +14,49 @@ class VodanSeeder extends Seeder
      */
     public function run()
     {
-        DB::select(DB::raw("INSERT INTO `questionnaires` (`id`, `description`) VALUES
-        (1, 'WHO COVID-19 Rapid Version CRF');"));
+        DB::statement("INSERT INTO `questionnaires` (`id`, `description`) VALUES
+        (1, 'WHO COVID-19 Rapid Version CRF');");
 
-        DB::select(DB::raw("INSERT INTO `crf_forms` (`id`, `questionnaire_id`, `description`) VALUES
+        DB::statement("INSERT INTO `crf_forms` (`id`, `questionnaire_id`, `description`) VALUES
         (1, 1, 'Admission form'),
         (2, 1, 'Follow-up'),
-        (3, 1, 'Discharge/death form');"));
+        (3, 1, 'Discharge/death form');");
 
-        DB::select(DB::raw("INSERT INTO `group_roles` (`id`, `description`) VALUES
+        DB::statement("INSERT INTO `group_roles` (`id`, `description`) VALUES
         (1, 'Administrador'),
         (2, 'ETL - Arquivos'),
         (3, 'ETL - BD a BD'),
         (4, 'Gestor de Ontologia'),
         (5, 'Gestor de Repositório'),
         (6, 'Notificador Médico'),
-        (7, 'Notificador Profissional de Saúde');"));
+        (7, 'Notificador Profissional de Saúde');");
 
-        DB::select(DB::raw("INSERT INTO `hospital_units` (`id`, `hospital_unit_name`) VALUES
+        DB::statement("INSERT INTO `hospital_units` (`id`, `hospital_unit_name`) VALUES
         (1, 'Hospital Universitário Gaffrée e Guinle - HUGG'),
-        (2, 'Hospital municipal São José');"));
+        (2, 'Hospital municipal São José');");
 
-        DB::select(DB::raw("INSERT INTO `languages` (`id`, `description`) VALUES
-        (1, 'pt-br');"));
+        DB::statement("INSERT INTO `languages` (`id`, `description`) VALUES
+        (1, 'pt-br');");
 
-        DB::select(DB::raw("INSERT INTO `list_of_values` (`id`, `list_type_id`, `description`) VALUES
+		DB::statement("INSERT INTO `list_types` (`id`, `description`) VALUES
+		(1, 'Antiviral list'),
+		(2, 'AVPU list'),
+		(3, 'Coronavirus list'),
+		(4, 'Corticosteroid list'),
+		(5, 'Country list'),
+		(6, 'HIV list'),
+		(7, 'Interface list'),
+		(8, 'O2 flow list'),
+		(9, 'Outcome list'),
+		(10, 'Outcome saturation list'),
+		(11, 'pnnotdone_list'),
+		(12, 'self_care_list'),
+		(13, 'sex at birth list'),
+		(14, 'Source of oxygen list'),
+		(15, 'ynu_list'),
+		(16, 'ynun_list');");
+
+        DB::statement("INSERT INTO `list_of_values` (`id`, `list_type_id`, `description`) VALUES
         (1, 1, 'Interferon alpha'),
         (2, 1, 'Interferon beta'),
         (3, 1, 'Lopinavir/Ritonavir'),
@@ -345,27 +363,9 @@ class VodanSeeder extends Seeder
         (304, 11, 'Positive'),
         (305, 1, 'Azithromycin'),
         (306, 1, 'Chloroquine/hydroxychloroquine'),
-        (307, 1, 'Favipiravir');"));
+        (307, 1, 'Favipiravir');");
 
-        DB::select(DB::raw("INSERT INTO `list_types` (`id`, `description`) VALUES
-        (1, 'Antiviral list'),
-        (2, 'AVPU list'),
-        (3, 'Coronavirus list'),
-        (4, 'Corticosteroid list'),
-        (5, 'Country list'),
-        (6, 'HIV list'),
-        (7, 'Interface list'),
-        (8, 'O2 flow list'),
-        (9, 'Outcome list'),
-        (10, 'Outcome saturation list'),
-        (11, 'pnnotdone_list'),
-        (12, 'self_care_list'),
-        (13, 'sex at birth list'),
-        (14, 'Source of oxygen list'),
-        (15, 'ynu_list'),
-        (16, 'ynun_list');"));
-
-        DB::select(DB::raw("INSERT INTO `multi_languages` (`id`,`language_id`, `description`, `description_lang`) VALUES
+        DB::statement("INSERT INTO `multi_languages` (`id`,`language_id`, `description`, `description_lang`) VALUES
         (1, 1, '>15 L/min', '> 15 L/min'),
         (2, 1, '1-5 L/min', '1-5 L/min'),
         (3, 1, '11-15 L/min', '11-15 L/min'),
@@ -924,15 +924,15 @@ class VodanSeeder extends Seeder
         (556, 1, 'ynun_list', 'Lista YNUN'),
         (557, 1, 'YNUN_Question', 'Questão com resposta Sim Não Desconhecido Não Informado'),
         (558, 1, 'Zambia', 'Zambia'),
-        (559, 1, 'Zimbabwe', 'Zimbabwe');"));
+        (559, 1, 'Zimbabwe', 'Zimbabwe');");
 
-        DB::select(DB::raw("INSERT INTO `permissions` (`id`, `description`) VALUES
+        DB::statement("INSERT INTO `permissions` (`id`, `description`) VALUES
         (1, 'Insert'),
         (2, 'Update'),
         (3, 'Delete'),
-        (4, 'ALL');"));
+        (4, 'ALL');");
 
-        DB::select(DB::raw("INSERT INTO `question_groups` (`id`, `description`, `comment`) VALUES
+        DB::statement("INSERT INTO `question_groups` (`id`, `description`, `comment`) VALUES
         (1, 'Clinical inclusion criteria', ''),
         (2, 'Co-morbidities', 'Existing conditions prior to admission.'),
         (3, 'Complications', ''),
@@ -946,9 +946,9 @@ class VodanSeeder extends Seeder
         (11, 'Pre-admission & chronic medication', 'Were any of the following taken within 14 days of admission?'),
         (12, 'Signs and symptoms on admission', ''),
         (13, 'Supportive care', 'Is the patient CURRENTLY receiving any of the following?'),
-        (14, 'Vital signs', '');"));
+        (14, 'Vital signs', '');");
 
-        DB::select(DB::raw("INSERT INTO `question_types` (`id`, `description`) VALUES
+        DB::statement("INSERT INTO `question_types` (`id`, `description`) VALUES
         (1, 'Boolean_Question'),
         (2, 'Date question'),
         (3, 'Laboratory question'),
@@ -958,9 +958,9 @@ class VodanSeeder extends Seeder
         (7, 'Text_Question'),
         (8, 'YNU_Question'),
         (9, 'YNUN_Question'),
-        (10, 'Ventilation question');"));
+        (10, 'Ventilation question');");
 
-        DB::select(DB::raw("INSERT INTO `questions` (`id`, `description`, `question_type_id`, `list_type_id`, `question_group_id`, `subordinate_to`, `is_about`) VALUES
+        DB::statement("INSERT INTO `questions` (`id`, `description`, `question_type_id`, `list_type_id`, `question_group_id`, `subordinate_to`, `is_about`) VALUES
         (1, 'Age', 5, NULL, 6, NULL, NULL),
         (2, 'Altered consciousness/confusion', 8, 15, NULL, NULL, NULL),
         (3, 'Angiotensin converting enzyme inhibitors (ACE inhibitors)', 8, 15, NULL, NULL, NULL),
@@ -1215,9 +1215,9 @@ class VodanSeeder extends Seeder
         (252, 'Loss of smell signs', 8, 15, 12, NULL, 243),
         (253, 'Loss of taste signs', 8, 15, 12, NULL, 244),
         (254, 'Which antiviral', 4, 1, 11, NULL, 101),
-        (255, 'Which other antiviral', 7, NULL, 11, 254, 104);"));
+        (255, 'Which other antiviral', 7, NULL, 11, 254, 104);");
 
-        DB::select(DB::raw("INSERT INTO `question_group_forms` (`id`, `crf_form_id`, `question_id`, `question_order`) VALUES
+        DB::statement("INSERT INTO `question_group_forms` (`id`, `crf_form_id`, `question_id`, `question_order`) VALUES
         (1, 1, 29, 10629),
         (2, 1, 33, 10710),
         (3, 1, 34, 10711),
@@ -1520,18 +1520,18 @@ class VodanSeeder extends Seeder
         (300, 3, 236, 30412),
         (301, 3, 237, 30414),
         (302, 3, 238, 30416),
-        (303, 3, 240, 30419);"));
+        (303, 3, 240, 30419);");
 
-        DB::select(DB::raw("INSERT INTO `users` (`id`, `login`, `first_name`, `last_name`, `regional_council_code`, `password`, `email`, `phone_number`) VALUES
+        DB::statement("INSERT INTO `users` (`id`, `login`, `first_name`, `last_name`, `regional_council_code`, `password`, `email`, `phone_number`) VALUES
         (2, 'ETL_Hosp_Exemplo', 'ETL', 'Hosp EXEMPLO', NULL, 'testepsw', 'admin@hospitalexemplo.com.br', '5555-5555'),
         (3, '01482642719', 'Vania', 'Borges', 'CRM 69596800', 'teste_psw', 'vj@gmail.com', '21 5555-5555'),
         (8, 'Admin HUGG', 'Administrador', 'HUGG', 'CRM/CRF', 'teste_psw', 'adminHUGG@gmail.com', '21 5555-5555'),
-        (11, 'Admin', 'Administrador', 'Sistema', 'CRM/CRF', 'admin', 'adminsys@gmail.com', '5555-5555');"));
+        (11, 'Admin', 'Administrador', 'Sistema', 'CRM/CRF', 'admin', 'adminsys@gmail.com', '5555-5555');");
 
-        DB::select(DB::raw("INSERT INTO `user_roles` (`id`, `user_id`, `group_role_id`, `hospital_unit_id`, `creation_date`, `expiration_date`) VALUES
+        DB::statement("INSERT INTO `user_roles` (`id`, `user_id`, `group_role_id`, `hospital_unit_id`, `creation_date`, `expiration_date`) VALUES
         (1, 3, 7, 1, '2020-12-07 14:44:23', NULL),
         (2, 8, 1, 1, '2020-12-09 18:43:06', NULL),
         (3, 11, 1, 1, '2020-12-09 20:11:59', NULL),
-        (4 ,11, 1, 2, '2020-12-09 20:11:59', NULL);"));
+        (4 ,11, 1, 2, '2020-12-09 20:11:59', NULL);");
     }
 }
