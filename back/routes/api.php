@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\QuestionnaireController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,9 @@ use App\Http\Controllers\UserController;
 */
 
 Route::post('createUserAdmin', [UserController::class, 'createUserAdmin']);
+
+// Questionnaire
+Route::delete('deleteQuestionnaire/{id}', [QuestionnaireController::class, 'deleteQuestionnaire']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

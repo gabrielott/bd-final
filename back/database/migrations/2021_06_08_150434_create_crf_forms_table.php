@@ -15,9 +15,13 @@ class CreateCRFFormsTable extends Migration
     {
         Schema::create('crf_forms', function (Blueprint $table) {
             $table->id();
-			$table->foreignId('questionnaire_id')->constrained();
+			$table->foreignId('questionnaire_id');
 			$table->string('description');
             $table->timestamps();
+        });
+
+        Schema::table('crf_forms', function (Blueprint $table) {
+            $table->foreign('questionnaire_id')->references('id')->on('questionnaires')->onDelete('cascade');
         });
     }
 

@@ -14,8 +14,8 @@ class VodanSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("INSERT INTO `questionnaires` (`id`, `description`) VALUES
-        (1, 'WHO COVID-19 Rapid Version CRF');");
+        DB::statement("INSERT INTO `questionnaires` (`id`, `description`, `is_published`) VALUES
+        (1, 'WHO COVID-19 Rapid Version CRF', 0);");
 
         DB::statement("INSERT INTO `crf_forms` (`id`, `questionnaire_id`, `description`) VALUES
         (1, 1, 'Admission form'),

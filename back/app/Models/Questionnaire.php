@@ -9,8 +9,9 @@ class Questionnaire extends Model
 {
     use HasFactory;
 
-    public function createQuestionnaire($request) {
+    public function createQuestionnaire($request){
         $this->description = $request->description;
+        $this->is_published = $request->is_published;
         $this->save();
     }
 
@@ -20,9 +21,11 @@ class Questionnaire extends Model
         }
         $this->save();
     }
+
     public function assessmentQuestionnaires(){
         return $this->hasMany('App\Models\AssessmentQuestionnaire');
     }
+
     public function crfForms(){
         return $this->hasMany('App\Models\CRFForm');
     }
