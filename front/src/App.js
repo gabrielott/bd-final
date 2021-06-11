@@ -1,7 +1,7 @@
 import React from "react";
-import Popup from "reactjs-popup";
-import './App.css';
-import "reactjs-popup/dist/index.css";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "./App.css";
+import "./react-tabs.css"
 
 const modules = {
 	id: "1",
@@ -191,15 +191,15 @@ class Survey extends React.Component {
 				</div>
 				<div className="survey-body">
 					{modules}
-					<button type="button" onClick={this.handleSave}>
-						Salvar
-					</button>
 				</div>
 				<div className="survey-tail">
 					<button
 						type="button"
 						onClick={this.handleCreateModule}>
 						Novo módulo
+					</button>
+					<button type="button" onClick={this.handleSave}>
+						Salvar
 					</button>
 				</div>
 			</div>
@@ -449,14 +449,30 @@ function App(props) {
 	}
 
 	return (
-		<div className="survey">
-			<Survey
-				description="Title"
-				modules={[module]}
-				types={types}
-				list_types={list_types}
-			/>
-		</div>
+		<Tabs className="tabs">
+			<TabList className="tablist">
+				<Tab>Formulários</Tab>
+				<Tab>Questões</Tab>
+				<Tab>Listas</Tab>
+			</TabList>
+
+			<TabPanel>
+				<div className="survey">
+					<Survey
+						description="Title"
+						modules={[module]}
+						types={types}
+						list_types={list_types}
+					/>
+				</div>
+			</TabPanel>
+			<TabPanel>
+				<h1>Questões</h1>
+			</TabPanel>
+			<TabPanel>
+				<h1>Listas</h1>
+			</TabPanel>
+		</Tabs>
 	);
 }
 
