@@ -11,7 +11,10 @@ class Questionnaire extends Model
 
     public function createQuestionnaire($request){
         $this->description = $request->description;
-        $this->is_published = $request->is_published;
+        $this->is_published = 0;
+        if($request->is_published){
+            $this->is_published = $request->is_published;
+        }
         $this->save();
     }
 
@@ -27,6 +30,6 @@ class Questionnaire extends Model
     }
 
     public function crfForms(){
-        return $this->hasMany('App\Models\CRFForm');
+        return $this->hasMany('App\Models\CrfForm');
     }
 }

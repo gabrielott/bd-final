@@ -15,12 +15,15 @@ class VodanSeeder extends Seeder
     public function run()
     {
         DB::statement("INSERT INTO `questionnaires` (`id`, `description`, `is_published`) VALUES
-        (1, 'WHO COVID-19 Rapid Version CRF', 0);");
+        (1, 'WHO COVID-19 Rapid Version CRF', 1),
+        (2, 'FICHA DE INVESTIGAÇÃO DE SG SUSPEITO DE DOENÇA PELO CORONAVÍRUS 2019 – COVID-19 (B34.2)', 0);");
 
         DB::statement("INSERT INTO `crf_forms` (`id`, `questionnaire_id`, `description`) VALUES
         (1, 1, 'Admission form'),
         (2, 1, 'Follow-up'),
-        (3, 1, 'Discharge/death form');");
+        (3, 1, 'Discharge/death form'),
+        (4, 2, 'Identificação'),
+        (5, 2, 'Dados Clínicos Epidemológicos');");
 
         DB::statement("INSERT INTO `group_roles` (`id`, `description`) VALUES
         (1, 'Administrador'),
@@ -54,7 +57,14 @@ class VodanSeeder extends Seeder
 		(13, 'sex at birth list'),
 		(14, 'Source of oxygen list'),
 		(15, 'ynu_list'),
-		(16, 'ynun_list');");
+		(16, 'ynun_list'),
+        (17, 'Sintomas'),
+        (18, 'Condições'),
+        (19, 'Estado do teste'),
+        (20, 'Tipo de teste'),
+        (21, 'Resultado do teste'),
+        (22, 'Classificação final'),
+        (23, 'Evolução do caso')");
 
         DB::statement("INSERT INTO `list_of_values` (`id`, `list_type_id`, `description`) VALUES
         (1, 1, 'Interferon alpha'),
@@ -363,7 +373,37 @@ class VodanSeeder extends Seeder
         (304, 11, 'Positive'),
         (305, 1, 'Azithromycin'),
         (306, 1, 'Chloroquine/hydroxychloroquine'),
-        (307, 1, 'Favipiravir');");
+        (307, 1, 'Favipiravir'),
+        (308, 17, 'Dor de Garganta'),
+        (309, 17, 'Dispneia'),
+        (310, 17, 'Febre'),
+        (311, 17, 'Tosse'),
+        (312, 17, 'Outros'),
+        (313, 18, 'Doenças respiratórias crônicas descompensadas'),
+        (314, 18, 'Doenças cardíacas crônicas'),
+        (315, 18, 'Diabetes'),
+        (316, 18, 'Doenças renais crônicas em estágio avançado (graus 3, 4 e 5)'),
+        (317, 18, 'Imunossupressão'),
+        (318, 18, 'Gestante de alto risco'),
+        (319, 18, 'Portador de doenças cromossômicas ou estado de fragilidade imunológica'),
+        (320, 19, 'Solicitado'),
+        (321, 19, 'Coletado'),
+        (322, 19, 'Concluído'),
+        (323, 20, 'Teste rápido - anticorpo'),
+        (324, 20, 'Teste rápido - antígeno'),
+        (325, 20, 'RT - PCR'),
+        (326, 21, 'Negativo'),
+        (327, 21, 'Positivo'),
+        (328, 22, 'Confirmação laboratorial'),
+        (329, 22, 'Confirmação clínico epidemiológico'),
+        (330, 22, 'Descartado'),
+        (331, 23, 'Cancelado'),
+        (332, 23, 'Ignorado'),
+        (333, 23, 'Óbito'),
+        (334, 23, 'Cura'),
+        (335, 23, 'Internado'),
+        (336, 23, 'Internado em UTI'),
+        (337, 23, 'Em tratamento domiciliar');");
 
         DB::statement("INSERT INTO `multi_languages` (`id`,`language_id`, `description`, `description_lang`) VALUES
         (1, 1, '>15 L/min', '> 15 L/min'),

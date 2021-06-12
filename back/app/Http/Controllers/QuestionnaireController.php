@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Questionnaire;
-use App\Models\CRFForm;
+use App\Models\CrfForm;
+use App\Models\Question;
+use App\Models\QuestionGroupForm;
 
 class QuestionnaireController extends Controller
 {
@@ -12,26 +14,79 @@ class QuestionnaireController extends Controller
         $questionnaire = new Questionnaire;
         $questionnaire->createQuestionnaire($request);
         foreach($request->module as $module){
+            $module = (Object) $module;
             $module->questionnaire_id = $questionnaire->id;
-            $moduleBd = new CRFForm;
+            $moduleBd = new CrfForm;
             $moduleBd->createCRFForm($module);
-            if(is_empty($module->group)) continue;
-            foreach($module->group as $group){
+            if(empty($module->groups)) continue;
+            foreach($module->groups as $group){
+                $group = (Object) $group;
+                $group->crf_form_id = $moduleBd->id;
                 foreach($group->questions as $question){
-                    $questionBd = new Question;
-                    $questionBd->createQuestion($question);
-                    $group->crf_form_id = $moduleBd->id;
-                    $group->question_id = $questionBd->id;
-                    $group = new Group;
+                    $groupBd = new QuestionGroupForm;
+                    $group->question_id = $question;
+                    $group->question_order = $question;
+                    $groupBd->saveQuestionGroupForm($group);
                 }
             }
         }
-        return response()->json($questionnaire);
+        return response()->json($questionnaire, 200);
     }
 
-    public function updateCRFForm(Request $request){
-        $questionnaire->updateQuestionnaire($request);
-        return response()->json($questionnaire);
+    public function updateQuestionnaire(Request $request, $id){
+        $questionnaire = Questionnaire::find($id);
+        if(!$questionnaire)
+            return response()->json('Nada encontrado', 404);
+        if($questionnaire->last_version_id != NULL)
+            return response()->json('Não pode atualizar sem ser a ultima versao', 401);
+        $newQuestionnaire = new Questionnaire;
+        $newQuestionnaire->createQuestionnaire($request);
+        $questionnaire->last_version_id = $newQuestionnaire->id;
+        $questionnaire->save();
+        Questionnaire::where('last_version_id', $id)->update(['last_version_id' => $newQuestionnaire->id]);
+        foreach($request->module as $module){
+            $module = (Object) $module;
+            $module->questionnaire_id = $newQuestionnaire->id;
+            $moduleBd = new CrfForm;
+            $moduleBd->createCRFForm($module);
+            if(empty($module->groups)) continue;
+            foreach($module->groups as $group){
+                $group = (Object) $group;
+                $group->crf_form_id = $moduleBd->id;
+                foreach($group->questions as $question){
+                    $groupBd = new QuestionGroupForm;
+                    $group->question_id = $question;
+                    $group->question_order = $question;
+                    $groupBd->saveQuestionGroupForm($group);
+                }
+            }
+        }
+        return response()->json($newQuestionnaire, 200);
+    }
+
+    public function index(){
+        return response()->json(Questionnaire::all(), 200);
+    }
+
+    public function getVersions($id){
+        $questionnaire = Questionnaire::find($id);
+        $old_versions = Questionnaire::where('last_version_id', $id)->get();
+        $arrayQuestionnaires = [];
+        array_push($arrayQuestionnaires, $questionnaire, $old_versions);
+        return response()->json($arrayQuestionnaires, 200);
+    }
+
+    public function show($id){
+        $questionnaire = Questionnaire::find($id);
+        $modules = CrfForm::where('questionnaire_id', $questionnaire->id)->get();
+        $idsModules = $modules->pluck('id');
+        $groups = QuestionGroupForm::whereIn('crf_form_id', $idsModules)->get();
+        $idsQuestions = $groups->pluck('question_id');
+        $questions = Question::whereIn('id', $idsQuestions)->get();
+        return response()->json(["questionnaire" => $questionnaire, 
+                                "modules" => $modules,
+                                "groups" => $groups,
+                                "questions" => $questions], 200);
     }
 
     public function deleteQuestionnaire($id){

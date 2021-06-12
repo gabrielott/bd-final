@@ -9,10 +9,13 @@ class QuestionGroupForm extends Model
 {
     use HasFactory;
 
-    public function createQuestionGroupForm($request) {
-        $this->crf_form_id = $request->crf_form_id;
-        $this->question_id = $request->question_id;
-        $this->question_order = $request->question_order;
+    public function saveQuestionGroupForm($request) {
+        if($request->question_id)
+            $this->crf_form_id = $request->crf_form_id;
+        if($request->question_id)
+            $this->question_id = $request->question_id;
+        if($request->question_order)
+            $this->question_order = $request->question_order;
         $this->save();
     }
 
@@ -30,6 +33,6 @@ class QuestionGroupForm extends Model
         return $this->belongsTo('App\Models\QuestionGroupFormRecord');
     }
     public function crfForm(){
-        return $this->belongsTo('App\Models\CRFForms');
+        return $this->belongsTo('App\Models\CrfForm');
     }
 }

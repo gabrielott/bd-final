@@ -15,14 +15,14 @@ class CreateQuestionnairesTable extends Migration
     {
         Schema::create('questionnaires', function (Blueprint $table) {
             $table->id();
-			$table->string('description');
+			$table->string('description')->unique();
             $table->boolean('is_published');
             $table->unsignedBigInteger('last_version_id')->nullable();
             $table->timestamps();
         });
 
 		Schema::table('questionnaires', function (Blueprint $table){
-            $table->foreign('last_version_id')->references('id')->on('questionnaires')->onDelete('set null');
+            $table->foreign('last_version_id')->references('id')->on('questionnaires')->onDelete('cascade');
         });
     }
 
