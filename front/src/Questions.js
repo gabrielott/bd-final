@@ -12,6 +12,8 @@ class QuestionEditor extends React.Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
+		this.handleNewQuestion = this.handleNewQuestion.bind(this);
+		this.handleDeleteQuestion = this.handleDeleteQuestion.bind(this);
 	}
 
 	handleInputChange(event) {
@@ -32,8 +34,33 @@ class QuestionEditor extends React.Component {
 		this.setState({selected: index});
 	}
 
+	handleNewQuestion() {
+		const questions = this.state.questions.slice();
+		questions.push({
+			id: "new",
+			description: "Nova pergunta",
+			type: 0,
+			list_type: 0,
+		});
+
+		this.setState({
+			questions: questions,
+			selected: questions.length - 1,
+		});
+	}
+
+	handleDeleteQuestion() {
+		const questions = this.state.questions.slice();
+		questions.splice(this.state.selected, 1);
+
+		this.setState((state, props) => ({
+			questions: questions,
+			selected: Math.max(state.selected - 1, 0),
+		}));
+	}
+
 	render() {
-		const questions = this.props.questions.map((q, i) =>
+		const questions = this.state.questions.map((q, i) =>
 			<li
 				key={i}
 				className={this.state.selected === i ? "qeditor-question-selected" : "qeditor-question"}
@@ -58,6 +85,14 @@ class QuestionEditor extends React.Component {
 		return (
 			<div className="qeditor">
 				<div className="qeditor-left">
+					<div className="qeditor-left-bar">
+						<button onClick={this.handleNewQuestion}>
+							Nova pergunta
+						</button>
+						<button onClick={this.handleDeleteQuestion}>
+							Apagar selecionada
+						</button>
+					</div>
 					<ul>
 						{questions}
 					</ul>

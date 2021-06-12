@@ -21,7 +21,7 @@
 	padding: 0;
 }
 
-.qeditor-question, .qeditor-question-selected {
+.qeditor-question, .qeditor-question-selected, .qeditor-left-bar {
 	border-radius: 15px;
 	border-style: solid;
 	border-width: 2px;
@@ -46,6 +46,14 @@
 	background-color: #282828;
 	border-color: #282828;
 	color: white;
+}
+
+.qeditor-left-bar {
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 5%;
+	border-color: #F0F0F0;
+	background-color: #F0F0F0;
 }
 
 .qeditor-right {
