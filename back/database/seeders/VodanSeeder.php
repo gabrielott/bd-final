@@ -23,7 +23,8 @@ class VodanSeeder extends Seeder
         (2, 1, 'Follow-up'),
         (3, 1, 'Discharge/death form'),
         (4, 2, 'Identificação'),
-        (5, 2, 'Dados Clínicos Epidemológicos');");
+        (5, 2, 'Dados Clínicos Epidemológicos'),
+		(6, 2, 'Informações complementares e observações');");
 
         DB::statement("INSERT INTO `group_roles` (`id`, `description`) VALUES
         (1, 'Administrador'),
@@ -1255,7 +1256,41 @@ class VodanSeeder extends Seeder
         (252, 'Loss of smell signs', 8, 15, 12, NULL, 243),
         (253, 'Loss of taste signs', 8, 15, 12, NULL, 244),
         (254, 'Which antiviral', 4, 1, 11, NULL, 101),
-        (255, 'Which other antiviral', 7, NULL, 11, 254, 104);");
+        (255, 'Which other antiviral', 7, NULL, 11, 254, 104),
+		(256, 'UF', 5, NULL, NULL, NULL, NULL),
+		(257, 'Município de Notificação', 7, NULL, NULL, NULL, NULL),
+		(258, 'Tem CPF?', 1, NULL, NULL, NULL, NULL),
+		(259, 'Estrangeiro', 1, NULL, NULL, NULL, NULL),
+		(260, 'É Profissional de saúde?', 1, NULL, NULL, NULL, NULL),
+		(261, 'CBO', 7, NULL, NULL, NULL, NULL),
+		(262, 'CPF', 5, NULL, NULL, NULL, NULL),
+		(263, 'CNS', 5, NULL, NULL, NULL, NULL),
+		(264, 'Nome Completo', 7, NULL, NULL, NULL, NULL),
+		(265, 'Nome Completo da Mãe', 7, NULL, NULL, NULL, NULL),
+		(266, 'Data de Nascimento', 2, NULL, NULL, NULL, NULL),
+		(267, 'País de origem', 7, NULL, NULL, NULL, NULL),
+		(268, 'Sexo', 1, NULL, NULL, NULL, NULL),
+		(269, 'Passaporte', 5, NULL, NULL, NULL, NULL),
+		(270, 'CEP', 5, NULL, NULL, NULL, NULL),
+		(271, 'UF', 5, NULL, NULL, NULL, NULL),
+		(272, 'Município de Residência', 7, NULL, NULL, NULL, NULL),
+		(273, 'Logradouro', 7, NULL, NULL, NULL, NULL),
+		(274, 'Complemento', 7, NULL, NULL, NULL, NULL),
+		(275, 'Bairro', 7, NULL, NULL, NULL, NULL),
+		(276, 'Telefone Celular', 5, NULL, NULL, NULL, NULL),
+		(277, 'Telefone do contato', 5, NULL, NULL, NULL, NULL),
+		(278, 'Data da Notificação', 2, NULL, NULL, NULL, NULL),
+		(279, 'Sintomas', 4, 17, 1, NULL, NULL),
+		(280, 'Data do início dos sintomas', 2, 1, NULL, NULL, NULL),
+		(281, 'Condições', 4, 18, NULL, NULL, NULL),
+		(282, 'Estado do Teste', 4, 19, NULL, NULL, NULL),
+		(283, 'Data da Coleta do Teste', 2, NULL, NULL, NULL, NULL),
+		(284, 'Tipo do Teste', 4, 20, NULL, 258, NULL),
+		(285, 'Resultado do teste', 4, 21, NULL, 259, NULL),
+		(286, 'Classificação final', 4, 22, NULL, 260, NULL),
+		(287, 'Evolução do caso', 4, 23, NULL, 261, NULL),
+		(288, 'Data de encerramento', 2, NULL, NULL, NULL, NULL),
+		(289, 'Observações Adicionais', 7, NULL, NULL, NULL, NULL);");
 
         DB::statement("INSERT INTO `question_group_forms` (`id`, `crf_form_id`, `question_id`, `question_order`) VALUES
         (1, 1, 29, 10629),
@@ -1560,18 +1595,55 @@ class VodanSeeder extends Seeder
         (300, 3, 236, 30412),
         (301, 3, 237, 30414),
         (302, 3, 238, 30416),
-        (303, 3, 240, 30419);");
+        (303, 3, 240, 30419),
+		(304, 4, 256, 1),
+		(305, 4, 257, 2),
+		(306, 4, 258, 3),
+		(307, 4, 259, 4),
+		(308, 4, 260, 5),
+		(309, 4, 261, 6),
+		(310, 4, 262, 7),
+		(311, 4, 263, 8),
+		(312, 4, 264, 9),
+		(313, 4, 265, 10),
+		(314, 4, 266, 11),
+		(315, 4, 267, 12),
+		(316, 4, 268, 13),
+		(317, 4, 269, 14),
+		(318, 4, 270, 15),
+		(319, 4, 271, 16),
+		(320, 4, 272, 17),
+		(321, 4, 273, 18),
+		(322, 4, 274, 19),
+		(323, 4, 275, 20),
+		(324, 4, 276, 21),
+		(325, 4, 277, 22),
+		(326, 4, 278, 23),
+		(327, 5, 279, 1),
+		(328, 5, 280, 2),
+		(329, 5, 281, 3),
+		(330, 5, 282, 4),
+		(331, 5, 283, 5),
+		(332, 5, 284, 6),
+		(333, 5, 285, 7),
+		(334, 5, 286, 8),
+		(335, 5, 287, 9),
+		(336, 5, 288, 10),
+		(337, 6, 289, 1);");
 
         DB::statement("INSERT INTO `users` (`id`, `login`, `first_name`, `last_name`, `regional_council_code`, `password`, `email`, `phone_number`) VALUES
         (2, 'ETL_Hosp_Exemplo', 'ETL', 'Hosp EXEMPLO', NULL, 'testepsw', 'admin@hospitalexemplo.com.br', '5555-5555'),
         (3, '01482642719', 'Vania', 'Borges', 'CRM 69596800', 'teste_psw', 'vj@gmail.com', '21 5555-5555'),
         (8, 'Admin HUGG', 'Administrador', 'HUGG', 'CRM/CRF', 'teste_psw', 'adminHUGG@gmail.com', '21 5555-5555'),
-        (11, 'Admin', 'Administrador', 'Sistema', 'CRM/CRF', 'admin', 'adminsys@gmail.com', '5555-5555');");
+        (11, 'Admin', 'Administrador', 'Sistema', 'CRM/CRF', 'admin', 'adminsys@gmail.com', '5555-5555'),
+		(13, 'Jotinha', 'Jorge', 'Afonso', 'CRM/CRF', 'lol123', 'jotinha@lol.com', '5555-5555');");
 
         DB::statement("INSERT INTO `user_roles` (`id`, `user_id`, `group_role_id`, `hospital_unit_id`, `creation_date`, `expiration_date`) VALUES
         (1, 3, 7, 1, '2020-12-07 14:44:23', NULL),
         (2, 8, 1, 1, '2020-12-09 18:43:06', NULL),
         (3, 11, 1, 1, '2020-12-09 20:11:59', NULL),
-        (4 ,11, 1, 2, '2020-12-09 20:11:59', NULL);");
+        (4, 11, 1, 2, '2020-12-09 20:11:59', NULL),
+		(5, 13, 1, 1, now(), NULL),
+		(6, 13, 1, 2, now(), NULL);");
     }
 }
