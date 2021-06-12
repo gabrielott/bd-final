@@ -2,6 +2,7 @@ import React from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Survey from "./Forms.js";
 import QuestionEditor from "./Questions.js";
+import ListEditor from "./Lists.js";
 import "./react-tabs.css";
 import "./App.css";
 
@@ -282,7 +283,9 @@ class App extends React.Component {
 				</TabPanel>
 
 				<TabPanel>
-					<h1>Listas</h1>
+					<ListEditor
+						lists={this.state.list_types}
+					/>
 				</TabPanel>
 			</Tabs>
 		);

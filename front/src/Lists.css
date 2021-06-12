@@ -1,0 +1,84 @@
+.leditor {
+	display: flex;
+	justify-content: space-between;
+	color: white;
+	border-radius: 15px;
+	background-color: #282828;
+	padding: 1%;
+}
+
+.leditor-left {
+	width: 50%;
+	padding: 1%;
+	margin-right: .5%;
+	border-radius: 15px;
+	background-color: #585858;
+}
+
+.leditor-left ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.leditor-list, .leditor-list-selected, .leditor-left-bar {
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #C0C0C0;
+	margin: 1%;
+	margin-left: 0;
+	margin-right: 0;
+	padding: 1%;
+	background-color: #C0C0C0;
+	color: black;
+	cursor: pointer;
+}
+
+.leditor-list-selected {
+	background-color: #282828;
+	border-color: #F0F0F0;
+	margin-left: 3%;
+	color: white;
+}
+
+.leditor-left li:hover {
+	background-color: #282828;
+	border-color: #282828;
+	color: white;
+}
+
+.leditor-left-bar {
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 5%;
+	margin-left: 7%;
+	margin-right: 7%;
+	border-color: #282828;
+	background-color: #282828;
+	cursor: default;
+}
+
+.leditor-right {
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	padding: 1%;
+	margin-left: .5%;
+	border-radius: 15px;
+	background-color: #585858;
+}
+
+.leditor-right input {
+	margin: 1%;
+	margin-left: 0;
+	margin-right: 0;
+	font-size: 1.5em;
+}
+
+.leditor-right select {
+	margin: 1%;
+	margin-left: 0;
+	margin-right: 0;
+	font-size: 1.25em;
+}
