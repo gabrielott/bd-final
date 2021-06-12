@@ -11,16 +11,6 @@ class Survey extends React.Component {
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
-		this.handleSave = this.handleSave.bind(this);
-		this.handleModuleChange = this.handleModuleChange.bind(this);
-		this.handleGroupChange = this.handleGroupChange.bind(this);
-		this.handleQuestionChange = this.handleQuestionChange.bind(this);
-		this.handleCreateModule = this.handleCreateModule.bind(this);
-		this.handleCreateGroup = this.handleCreateGroup.bind(this);
-		this.handleCreateQuestion = this.handleCreateQuestion.bind(this);
-		this.handleDeleteModule = this.handleDeleteModule.bind(this);
-		this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
-		this.handleDeleteQuestion = this.handleDeleteQuestion.bind(this);
 	}
 
 	handleInputChange(event) {
@@ -35,105 +25,23 @@ class Survey extends React.Component {
 		console.log(`survey: ${name} = ${value}`);
 	}
 
-	handleSave() {
-		console.log("survey: save");
-	}
-
-	handleModuleChange(moduleIndex, name, value) {
-		console.log(`module=${moduleIndex}`)
-		console.log(`name=${name} value=${value}`);
-
-		const modules = this.state.modules.slice();
-		const module = modules[moduleIndex];
-
-		module[name] = value;
-		this.setState({modules: modules});
-	}
-
-	handleGroupChange(moduleIndex, groupIndex, name, value) {
-		console.log(`module=${moduleIndex} group=${groupIndex}`)
-		console.log(`name=${name} value=${value}`);
-
-		const modules = this.state.modules.slice();
-		const group = modules[moduleIndex].groups[groupIndex];
-
-		group[name] = value;
-		this.setState({modules: modules});
-
-	}
-
-	handleQuestionChange(moduleIndex, groupIndex, questionIndex, newIndex) {
-		const modules = this.state.modules.slice();
-		const questions = modules[moduleIndex].groups[groupIndex].questions;
-		questions[questionIndex] = newIndex;
-
-		this.setState({modules: modules});
-	}
-
-	handleCreateModule() {
-		const modules = this.state.modules.slice();
-
-		modules.push({
-			description: "Novo módulo",
-			groups: [],
-		});
-		this.setState({modules: modules});
-	}
-
-	handleCreateGroup(moduleIndex) {
-		const modules = this.state.modules.slice();
-		const groups = modules[moduleIndex].groups;
-
-		groups.push({
-			description: "Novo grupo",
-			comment: "Novo comentário",
-			questions: [],
-		});
-		this.setState({modules: modules});
-	}
-
-	handleCreateQuestion(moduleIndex, groupIndex) {
-		const modules = this.state.modules.slice();
-		const questions = modules[moduleIndex].groups[groupIndex].questions;
-
-		questions.push(-1);
-		this.setState({modules: modules});
-	}
-
-	handleDeleteModule(moduleIndex) {
-		const modules = this.state.modules.slice();
-		modules.splice(moduleIndex, 1);
-		this.setState({modules: modules});
-	}
-
-	handleDeleteGroup(moduleIndex, groupIndex) {
-		const modules = this.state.modules.slice();
-		modules[moduleIndex].groups.splice(groupIndex, 1);
-		this.setState({modules: modules});
-	}
-
-	handleDeleteQuestion(moduleIndex, groupIndex, questionIndex) {
-		const modules = this.state.modules.slice();
-		modules[moduleIndex].groups[groupIndex].questions.splice(questionIndex, 1);
-		this.setState({modules: modules});
-	}
-
 	render() {
 		const modules = this.state.modules.map((m, i) =>
 			<Module
 				key={i}
 				index={i}
+				formIndex={this.props.index}
 				description={m.description}
 				groups={m.groups}
 				questions={this.props.questions}
-				onModuleChange={this.handleModuleChange}
-				onGroupChange={this.handleGroupChange}
-				onQuestionChange={this.handleQuestionChange}
-				onCreateGroup={this.handleCreateGroup}
-				onCreateQuestion={this.handleCreateQuestion}
-				onDeleteModule={this.handleDeleteModule}
-				onDeleteGroup={this.handleDeleteGroup}
-				onDeleteQuestion={this.handleDeleteQuestion}
+				onChangeModule={this.props.onChangeModule}
+				onChangeGroup={this.props.onChangeGroup}
+				onSelectQuestion={this.props.onSelectQuestion}
+				onCreateGroup={this.props.onCreateGroup}
+				onAddQuestion={this.props.onAddQuestion}
+				onDeleteModule={this.props.onDeleteModule}
+				onDeleteGroup={this.props.onDeleteGroup}
+				onRemoveQuestion={this.props.onRemoveQuestion}
 			/>
 		);
 
@@ -154,10 +62,10 @@ class Survey extends React.Component {
 				<div className="survey-tail">
 					<button
 						type="button"
-						onClick={this.handleCreateModule}>
+						onClick={() => this.props.onCreateModule(this.props.index)}>
 						Novo módulo
 					</button>
-					<button type="button" onClick={this.handleSave}>
+					<button type="button" onClick={() => this.props.onSaveForm(this.props.index)}>
 						Salvar
 					</button>
 				</div>
@@ -172,7 +80,8 @@ function Module(props) {
 		const value = target.value;
 		const name = target.name;
 
-		props.onModuleChange(
+		props.onChangeModule(
+			props.formIndex,
 			props.index,
 			name,
 			value
@@ -183,16 +92,17 @@ function Module(props) {
 		<Group
 			key={i}
 			index={i}
+			formIndex={props.formIndex}
 			moduleIndex={props.index}
 			description={g.description}
 			comment={g.comment}
 			questions={props.questions}
-			questionsId={g.questions}
-			onGroupChange={props.onGroupChange}
-			onQuestionChange={props.onQuestionChange}
-			onCreateQuestion={props.onCreateQuestion}
+			questionIds={g.questions}
+			onChangeGroup={props.onChangeGroup}
+			onSelectQuestion={props.onSelectQuestion}
+			onAddQuestion={props.onAddQuestion}
 			onDeleteGroup={props.onDeleteGroup}
-			onDeleteQuestion={props.onDeleteQuestion}
+			onRemoveQuestion={props.onRemoveQuestion}
 		/>
 	);
 
@@ -212,12 +122,12 @@ function Module(props) {
 			<div className="module-tail">
 				<button
 					type="button"
-					onClick={() => props.onCreateGroup(props.index)}>
+					onClick={() => props.onCreateGroup(props.formIndex, props.index)}>
 					Novo grupo
 				</button>
 				<button
 					type="button"
-					onClick={() => props.onDeleteModule(props.index)}
+					onClick={() => props.onDeleteModule(props.formIndex, props.index)}
 					disabled={props.index === 0}
 				>
 					Deletar módulo
@@ -233,7 +143,8 @@ function Group(props) {
 		const value = target.value;
 		const name = target.name;
 
-		props.onGroupChange(
+		props.onChangeGroup(
+			props.formIndex,
 			props.moduleIndex,
 			props.index,
 			name,
@@ -241,16 +152,17 @@ function Group(props) {
 		);
 	}
 
-	const questions = props.questionsId.map((id, i) =>
+	const questions = props.questionIds.map((id, i) =>
 		<Question
 			key={i}
 			index={i}
+			formIndex={props.formIndex}
 			moduleIndex={props.moduleIndex}
 			groupIndex={props.index}
 			questions={props.questions}
 			questionId={id}
-			onQuestionChange={props.onQuestionChange}
-			onDeleteQuestion={props.onDeleteQuestion}
+			onSelectQuestion={props.onSelectQuestion}
+			onRemoveQuestion={props.onRemoveQuestion}
 		/>
 	);
 
@@ -276,12 +188,12 @@ function Group(props) {
 			<div className="group-tail">
 				<button
 					type="button"
-					onClick={() => props.onCreateQuestion(props.moduleIndex, props.index)}>
+					onClick={() => props.onAddQuestion(props.formIndex, props.moduleIndex, props.index)}>
 					Nova pergunta
 				</button>
 				<button
 					type="button"
-					onClick={() => props.onDeleteGroup(props.moduleIndex, props.index)}
+					onClick={() => props.onDeleteGroup(props.formIndex, props.moduleIndex, props.index)}
 					disabled={props.index === 0}
 				>
 					Apagar grupo
@@ -296,16 +208,19 @@ function Question(props) {
 		const target = event.target;
 		const value = target.value;
 
-		props.onQuestionChange(
+		props.onSelectQuestion(
+			props.formIndex,
 			props.moduleIndex,
 			props.groupIndex,
 			props.index,
 			value,
 		);
+
+		console.log(`question: ${value}`);
 	}
 
 	const questions = props.questions.map((q, i) =>
-		<option value={i} key={i}>
+		<option value={q.id} key={i}>
 			{q.description}
 		</option>
 	);
@@ -324,7 +239,7 @@ function Question(props) {
 			<div className="question-tail">
 				<button
 					type="button"
-					onClick={() => props.onDeleteQuestion(props.moduleIndex, props.groupIndex, props.index)}
+					onClick={() => props.onRemoveQuestion(props.formIndex, props.moduleIndex, props.groupIndex, props.index)}
 					disabled={props.index === 0}
 				>
 					Apagar pergunta

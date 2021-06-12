@@ -52,8 +52,11 @@
 	display: flex;
 	justify-content: space-around;
 	margin-bottom: 5%;
-	border-color: #F0F0F0;
-	background-color: #F0F0F0;
+	margin-left: 7%;
+	margin-right: 7%;
+	border-color: #282828;
+	background-color: #282828;
+	cursor: default;
 }
 
 .qeditor-right {
