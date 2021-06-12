@@ -83,7 +83,7 @@ class QuestionnaireController extends Controller
         $groups = QuestionGroupForm::whereIn('crf_form_id', $idsModules)->get();
         $idsQuestions = $groups->pluck('question_id');
         $questions = Question::whereIn('id', $idsQuestions)->get();
-        return response()->json(["questionnaire" => $questionnaire, 
+        return response()->json(["questionnaire" => $questionnaire,
                                 "modules" => $modules,
                                 "groups" => $groups,
                                 "questions" => $questions], 200);
