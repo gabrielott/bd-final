@@ -86,10 +86,6 @@
 	background-color: #F0F0F0;
 }
 
-.question-header input {
-	font-size: 1.1em;
-}
-
 .question-body {
 	display: flex;
 }

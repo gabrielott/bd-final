@@ -62,14 +62,11 @@ class Survey extends React.Component {
 
 	}
 
-	handleQuestionChange(moduleIndex, groupIndex, questionIndex, name, value) {
-		console.log(`module=${moduleIndex} group=${groupIndex} question=${questionIndex}`)
-		console.log(`name=${name} value=${value}`);
-
+	handleQuestionChange(moduleIndex, groupIndex, questionIndex, newIndex) {
 		const modules = this.state.modules.slice();
-		const question = modules[moduleIndex].groups[groupIndex].questions[questionIndex];
+		const questions = modules[moduleIndex].groups[groupIndex].questions;
+		questions[questionIndex] = newIndex;
 
-		question[name] = value;
 		this.setState({modules: modules});
 	}
 
@@ -99,11 +96,7 @@ class Survey extends React.Component {
 		const modules = this.state.modules.slice();
 		const questions = modules[moduleIndex].groups[groupIndex].questions;
 
-		questions.push({
-			description: "Nova pergunta",
-			type: 1,
-			list_type: 1,
-		});
+		questions.push(-1);
 		this.setState({modules: modules});
 	}
 
@@ -132,8 +125,7 @@ class Survey extends React.Component {
 				index={i}
 				description={m.description}
 				groups={m.groups}
-				types={this.props.types}
-				list_types={this.props.list_types}
+				questions={this.props.questions}
 				onModuleChange={this.handleModuleChange}
 				onGroupChange={this.handleGroupChange}
 				onQuestionChange={this.handleQuestionChange}
@@ -194,9 +186,8 @@ function Module(props) {
 			moduleIndex={props.index}
 			description={g.description}
 			comment={g.comment}
-			questions={g.questions}
-			types={props.types}
-			list_types={props.list_types}
+			questions={props.questions}
+			questionsId={g.questions}
 			onGroupChange={props.onGroupChange}
 			onQuestionChange={props.onQuestionChange}
 			onCreateQuestion={props.onCreateQuestion}
@@ -250,17 +241,14 @@ function Group(props) {
 		);
 	}
 
-	const questions = props.questions.map((q, i) =>
+	const questions = props.questionsId.map((id, i) =>
 		<Question
 			key={i}
 			index={i}
 			moduleIndex={props.moduleIndex}
 			groupIndex={props.index}
-			description={q.description}
-			type={q.type}
-			list_type={q.list_type}
-			types={props.types}
-			list_types={props.list_types}
+			questions={props.questions}
+			questionId={id}
 			onQuestionChange={props.onQuestionChange}
 			onDeleteQuestion={props.onDeleteQuestion}
 		/>
@@ -307,51 +295,30 @@ function Question(props) {
 	function handleInputChange(event) {
 		const target = event.target;
 		const value = target.value;
-		const name = target.name;
 
 		props.onQuestionChange(
 			props.moduleIndex,
 			props.groupIndex,
 			props.index,
-			name,
-			value
+			value,
 		);
 	}
 
-	const type_options = props.types.map((t) =>
-		<option value={t.id} key={t.id}>
-			{t.description}
-		</option>
-	);
-
-	const list_type_options = props.list_types.map((t) =>
-		<option value={t.id} key={t.id}>
-			{t.description}
+	const questions = props.questions.map((q, i) =>
+		<option value={i} key={i}>
+			{q.description}
 		</option>
 	);
 
 	return (
 		<div className="question">
-			<div className="question-header" >
-				<input
-					type="text"
-					name="description"
-					value={props.description}
-					onChange={handleInputChange}
-				/>
-			</div>
 			<div className="question-body">
 				<select
-					name="type"
+					name="question"
+					value={props.questionId}
 					onChange={handleInputChange}
 				>
-					{type_options}
-				</select>
-				<select
-					name="list_type"
-					onChange={handleInputChange}
-				>
-					{list_type_options}
+					{questions}
 				</select>
 			</div>
 			<div className="question-tail">

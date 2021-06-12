@@ -38,26 +38,31 @@ function App(props) {
 
 	const questions = [
 		{
+			id: 0,
 			description: "Uma pergunta",
 			type: 0,
 			list_type: 0,
 		},
 		{
+			id: 1,
 			description: "Outra pergunta",
 			type: 1,
 			list_type: 1,
 		},
 		{
+			id: 2,
 			description: "Mais uma pergunta",
 			type: 2,
 			list_type: 2,
 		},
 		{
+			id: 3,
 			description: "Quem diria? É outra pergunta",
 			type: 2,
 			list_type: 2,
 		},
 		{
+			id: 4,
 			description: "Outra",
 			type: 0,
 			list_type: 0,
@@ -67,7 +72,7 @@ function App(props) {
 	const group = {
 		description: "Um grupo",
 		comment: "Comentando sobre o grupo",
-		questions: questions,
+		questions: [0, 1, 2, 3, 4],
 	};
 
 	const module = {
@@ -87,8 +92,7 @@ function App(props) {
 				<Survey
 					description="Title"
 					modules={[module]}
-					types={types}
-					list_types={list_types}
+					questions={questions}
 				/>
 			</TabPanel>
 			<TabPanel>
