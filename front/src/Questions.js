@@ -7,12 +7,15 @@ class QuestionEditor extends React.Component {
 
 		this.state = {
 			selected: 0,
+			pending: false,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
 		this.handleCreateQuestion = this.handleCreateQuestion.bind(this);
 		this.handleDeleteQuestion = this.handleDeleteQuestion.bind(this);
+		this.handleSave = this.handleSave.bind(this);
+		this.handleDiscard = this.handleDiscard.bind(this);
 	}
 
 	handleInputChange(event) {
@@ -21,9 +24,14 @@ class QuestionEditor extends React.Component {
 		const name = target.name;
 
 		this.props.onChangeQuestion(this.state.selected, name, value);
+		this.setState({pending: true});
 	}
 
 	handleSelect(index) {
+		if (this.state.pending) {
+			return;
+		}
+
 		this.setState({selected: index});
 	}
 
@@ -41,16 +49,38 @@ class QuestionEditor extends React.Component {
 		}));
 	}
 
+	handleSave() {
+		console.log("salvar");
+		this.setState({pending: false});
+	}
+
+	handleDiscard() {
+		this.setState({pending: false});
+	}
+
 	render() {
-		const questions = this.props.questions.map((q, i) =>
-			<li
-				key={i}
-				className={this.state.selected === i ? "qeditor-question-selected" : "qeditor-question"}
-				onClick={() => this.handleSelect(i)}
-			>
-				{q.description}
-			</li>
-		);
+		const questions = this.props.questions.map((q, i) => {
+			let qclass = "qeditor-question";
+			if (this.state.selected === i) {
+				if (this.state.pending) {
+					qclass= "qeditor-question-pending";
+				} else {
+					qclass = "qeditor-question-selected";
+				}
+			} else if (this.state.pending) {
+				qclass = "qeditor-question-blocked";
+			}
+
+			return (
+				<li
+					key={i}
+					className={qclass}
+					onClick={() => this.handleSelect(i)}
+				>
+					{q.description}
+				</li>
+			);
+		});
 
 		const type_options = this.props.types.map((t, i) =>
 			<option value={i} key={i}>
@@ -66,24 +96,25 @@ class QuestionEditor extends React.Component {
 
 		return (
 			<div className="qeditor">
-				<div className="qeditor-left">
-					<div className="qeditor-left-bar">
-						<button onClick={this.handleCreateQuestion}>
-							Nova pergunta
-						</button>
-						<button
-							onClick={this.handleDeleteQuestion}
-							disabled={this.props.questions.length === 0}
-						>
-							Apagar selecionada
-						</button>
+				<div className="qeditor-body">
+					<div className="qeditor-left">
+						<div className="qeditor-left-bar">
+							<button onClick={this.handleCreateQuestion}>
+								Nova pergunta
+							</button>
+							<button
+								onClick={this.handleDeleteQuestion}
+								disabled={this.props.questions.length === 0}
+							>
+								Apagar selecionada
+							</button>
+						</div>
+						<ul>
+							{questions}
+						</ul>
 					</div>
-					<ul>
-						{questions}
-					</ul>
-				</div>
-				{this.props.questions.length > 0 &&
-				<div className="qeditor-right">
+					{this.props.questions.length > 0 &&
+					<div className="qeditor-right">
 						<input
 							name="description"
 							value={this.props.questions[this.state.selected].description}
@@ -104,7 +135,22 @@ class QuestionEditor extends React.Component {
 							{list_options}
 						</select>
 					</div>
-				}
+					}
+				</div>
+				<div className="qeditor-tail">
+					<button
+						onClick={this.handleSave}
+						disabled={!this.state.pending}
+					>
+						Salvar
+					</button>
+					<button
+						onClick={this.handleDiscard}
+						disabled={!this.state.pending}
+					>
+						Descartar
+					</button>
+				</div>
 			</div>
 		);
 	}
