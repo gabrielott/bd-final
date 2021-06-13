@@ -46,37 +46,6 @@
 	flex-direction: row-reverse;
 }
 
-.group {
-	display: flex;
-	flex-direction: column;
-	padding: 1%;
-	border-radius: 15px;
-	background-color: #C0C0C0;
-	margin-bottom: 2%;
-}
-
-.group-header {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	margin: 1%;
-}
-
-.group-header input {
-	font-size: 1.25em;
-	margin-top: 0.5%;
-	margin-bottom: 0.5%;
-}
-
-.group-body {
-	padding-left: 4%;
-}
-
-.group-tail {
-	display: flex;
-	flex-direction: row-reverse;
-}
-
 .question {
 	display: flex;
 	flex-direction: column;

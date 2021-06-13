@@ -58,7 +58,7 @@ class QuestionEditor extends React.Component {
 			</option>
 		);
 
-		const list_type_options = this.props.list_types.map((t, i) =>
+		const list_options = this.props.lists.map((t, i) =>
 			<option value={i} key={i}>
 				{t.description}
 			</option>
@@ -97,11 +97,11 @@ class QuestionEditor extends React.Component {
 							{type_options}
 						</select>
 						<select
-							name="list_type"
-							value={this.props.questions[this.state.selected].list_type}
+							name="list"
+							value={this.props.questions[this.state.selected].list}
 							onChange={this.handleInputChange}
 						>
-							{list_type_options}
+							{list_options}
 						</select>
 					</div>
 				}

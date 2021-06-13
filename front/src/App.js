@@ -1,6 +1,6 @@
 import React from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import Survey from "./Forms.js";
+import Survey from "./Questionnaires.js";
 import QuestionEditor from "./Questions.js";
 import ListEditor from "./Lists.js";
 import "./react-tabs.css";
@@ -10,90 +10,100 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const types = [
+		const questionnaires = [
 			{
-				id: "1",
-				description: "tipo 1",
-			},
-			{
-				id: "2",
-				description: "tipo 2",
-			},
-			{
-				id: "3",
-				description: "tipo 3",
+				id: 1,
+				description: "Um questionário",
 			},
 		];
 
-		const list_types = [
+		const modules = [
 			{
-				id: "1",
-				description: "lista tipo 1",
-			},
-			{
-				id: "2",
-				description: "lista tipo 2",
-			},
-			{
-				id: "3",
-				description: "lista tipo 3",
+				id: 1,
+				questionnaire_id: 1,
+				description: "Um módulo",
 			},
 		];
 
-		const group = {
-			description: "Um grupo",
-			comment: "Comentando sobre o grupo",
-			questions: [0, 1, 2, 3, 4],
-		};
-
-		const module = {
-			description: "Um módulo",
-			groups: [group],
-		};
-
-		const form = {
-			description: "Um formulário",
-			modules: [module],
-		};
+		// question_groups_forms no back
+		const module_questions = [
+			{
+				id: 1,
+				// id do módulo
+				crf_form_id: 1,
+				question_id: 1,
+				question_order: 1,
+			},
+		];
 
 		const questions = [
 			{
-				id: 0,
-				description: "Uma pergunta",
-				type: 0,
-				list_type: 0,
-			},
-			{
 				id: 1,
-				description: "Outra pergunta",
-				type: 1,
-				list_type: 1,
+				description: "Uma pergunta",
+				question_type_id: 1,
+				list_type_id: null,
+				question_type: {
+					id: 1,
+					description: "Um tipo",
+				},
 			},
 			{
 				id: 2,
-				description: "Mais uma pergunta",
-				type: 2,
-				list_type: 2,
+				description: "Outra pergunta",
+				question_type_id: 1,
+				list_type_id: null,
+				question_type: {
+					id: 2,
+					description: "Dois tipo",
+				},
 			},
 			{
 				id: 3,
-				description: "Quem diria? É outra pergunta",
-				type: 2,
-				list_type: 2,
+				description: "Mais uma pergunta",
+				question_type_id: 1,
+				list_type_id: null,
+				question_type: {
+					id: 3,
+					description: "Três tipo",
+				},
+			},
+		];
+
+		const lists = [
+			{
+				id: 1,
+				description: "Um list type",
+				list_of_values: [
+					{
+						id: 1,
+						description: "Uma opção",
+					},
+				],
+			},
+		];
+
+		const types = [
+			{
+				id: 1,
+				description: "Um tipo",
 			},
 			{
-				id: 4,
-				description: "Outra",
-				type: 0,
-				list_type: 0,
+				id: 2,
+				description: "dois tipo",
+			},
+			{
+				id: 3,
+				description: "Três tipo",
 			},
 		];
 
 		this.state = {
+			quests: questionnaires,
+			modules: modules,
+			module_questions: module_questions,
 			questions: questions,
-			forms: [form],
+			lists: lists,
 			types: types,
-			list_types: list_types,
 			tempid: 0,
 		};
 
@@ -101,17 +111,14 @@ class App extends React.Component {
 		this.handleCreateQuestion = this.handleCreateQuestion.bind(this);
 		this.handleDeleteQuestion = this.handleDeleteQuestion.bind(this);
 
-		this.handleChangeForm = this.handleChangeForm.bind(this);
+		this.handleChangeQuest = this.handleChangeQuest.bind(this);
 		this.handleChangeModule = this.handleChangeModule.bind(this);
-		this.handleChangeGroup = this.handleChangeGroup.bind(this);
 		this.handleSelectQuestion = this.handleSelectQuestion.bind(this);
 		this.handleCreateModule = this.handleCreateModule.bind(this);
-		this.handleCreateGroup = this.handleCreateGroup.bind(this);
 		this.handleAddQuestion = this.handleAddQuestion.bind(this);
 		this.handleDeleteModule = this.handleDeleteModule.bind(this);
-		this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
 		this.handleRemoveQuestion = this.handleRemoveQuestion.bind(this);
-		this.handleSaveForm = this.handleSaveForm.bind(this);
+		this.handleSaveQuest = this.handleSaveQuest.bind(this);
 	}
 
 	// Chamadas pela aba de questões
@@ -145,108 +152,90 @@ class App extends React.Component {
 		this.setState({questions: questions});
 	}
 
+	// Chamadas pela aba de listas
+
+	handleChangeList() {
+
+	}
+	
+	handleCreateList() {
+
+	}
+
+	handleDeleteList() {
+
+	}
+
 	// Chamadas pela aba de formulários
 	
-	handleChangeForm(formIndex, name, value) {
-		const forms = this.state.forms.slice();
-		const form = forms[formIndex];
+	handleChangeQuest(questIndex, name, value) {
+		const quests = this.state.quests.slice();
+		const quest = quests[questIndex];
 
-		form[name] = value;
-		this.setState({forms: forms});
+		quest[name] = value;
+		this.setState({quests: quests});
 	}
 
-	handleChangeModule(formIndex, moduleIndex, name, value) {
-		console.log(`module=${moduleIndex}`)
-		console.log(`name=${name} value=${value}`);
-
-		const forms = this.state.forms.slice();
-		const module = forms[formIndex].modules[moduleIndex];
-
+	handleChangeModule(moduleIndex, name, value) {
+		const modules = this.state.modules.slice();
+		const module = modules[moduleIndex];
 		module[name] = value;
-		this.setState({forms: forms});
+		this.setState({modules: modules});
 	}
 
-	handleChangeGroup(formIndex, moduleIndex, groupIndex, name, value) {
-		console.log(`module=${moduleIndex} group=${groupIndex}`)
-		console.log(`name=${name} value=${value}`);
-
-		const forms = this.state.forms.slice();
-		const group = forms[formIndex].modules[moduleIndex].groups[groupIndex];
-
-		group[name] = value;
-		this.setState({forms: forms});
-
+	handleSelectQuestion(moduleQuestionIndex, questionId) {
+		const module_questions = this.state.module_questions.slice();
+		module_questions[moduleQuestionIndex].question_id = questionId;
+		this.setState({module_questions: module_questions});
 	}
 
-	handleSelectQuestion(formIndex, moduleIndex, groupIndex, questionIndex, newId) {
-		const forms = this.state.forms.slice();
-		const questions = forms[formIndex].modules[moduleIndex].groups[groupIndex].questions;
-		questions[questionIndex] = newId;
-
-		this.setState({forms: forms});
-	}
-
-	handleCreateModule(formIndex) {
-		const forms = this.state.forms.slice();
-		const modules = forms[formIndex].modules;
-
+	handleCreateModule(questIndex) {
+		const modules = this.state.modules.slice();
 		modules.push({
+			id: "new",
+			questionnaire_id: questIndex,
 			description: "Novo módulo",
-			groups: [],
 		});
-		this.setState({forms: forms});
+		this.setState({modules: modules});
 	}
 
-	handleCreateGroup(formIndex, moduleIndex) {
-		const forms = this.state.forms.slice();
-		const groups = forms[formIndex].modules[moduleIndex].groups;
+	handleAddQuestion(moduleId) {
+		// TODO: Id padrão
+		
+		console.log(`module=${moduleId}`);
 
-		groups.push({
-			description: "Novo grupo",
-			comment: "Novo comentário",
-			questions: [],
+		const module_questions = this.state.module_questions.slice();
+		module_questions.push({
+			id: "new",
+			crf_form_id: moduleId,
+			question_id: 1,
+			question_order: "new",
 		});
-		this.setState({forms: forms});
+
+		this.setState({module_questions: module_questions});
 	}
 
-	handleAddQuestion(formIndex, moduleIndex, groupIndex) {
-		const forms = this.state.forms.slice();
-		const questions = forms[formIndex].modules[moduleIndex].groups[groupIndex].questions;
-
-		questions.push(-1);
-		this.setState({forms: forms});
-	}
-
-	handleDeleteModule(formIndex, moduleIndex) {
-		const forms = this.state.forms.slice();
-		const modules = forms[formIndex].modules;
+	handleDeleteModule(moduleIndex) {
+		const modules = this.state.modules.slice();
 		modules.splice(moduleIndex, 1);
-		this.setState({forms: forms});
+		this.setState({modules: modules});
 	}
 
-	handleDeleteGroup(formIndex, moduleIndex, groupIndex) {
-		const forms = this.state.forms.slice();
-		const groups = forms[formIndex].modules[moduleIndex].groups;
-		groups.splice(groupIndex, 1);
-		this.setState({forms: forms});
+	handleRemoveQuestion(moduleQuestionIndex) {
+		const module_questions = this.state.module_questions.slice();
+		module_questions.splice(moduleQuestionIndex, 1);
+		this.setState({module_questions: module_questions});
 	}
 
-	handleRemoveQuestion(formIndex, moduleIndex, groupIndex, questionIndex) {
-		const forms = this.state.forms.slice();
-		const group = forms[formIndex].modules[moduleIndex].groups[groupIndex]
-		group.questions.splice(questionIndex, 1);
-		this.setState({forms: forms});
-	}
-
-	handleSaveForm(formIndex) {
-		console.log(`save form ${formIndex}`);
+	handleSaveQuest(questIndex) {
+		console.log(`save form ${questIndex}`);
 	}
 
 	render() {
 		return (
 			<Tabs className="tabs">
 				<TabList className="tablist">
-					<Tab>Formulários</Tab>
+					<Tab>Questionários</Tab>
 					<Tab>Questões</Tab>
 					<Tab>Listas</Tab>
 				</TabList>
@@ -254,28 +243,26 @@ class App extends React.Component {
 				<TabPanel>
 					<Survey
 						index={0}
-						description={this.state.forms[0].description}
-						modules={this.state.forms[0].modules}
+						description={this.state.quests[0].description}
+						modules={this.state.modules}
+						moduleQuestions={this.state.module_questions}
 						questions={this.state.questions}
-						onChangeForm={this.handleChangeForm}
+						onChangeQuest={this.handleChangeQuest}
 						onChangeModule={this.handleChangeModule}
-						onChangeGroup={this.handleChangeGroup}
 						onSelectQuestion={this.handleSelectQuestion}
 						onCreateModule={this.handleCreateModule}
-						onCreateGroup={this.handleCreateGroup}
 						onAddQuestion={this.handleAddQuestion}
 						onDeleteModule={this.handleDeleteModule}
-						onDeleteGroup={this.handleDeleteGroup}
 						onRemoveQuestion={this.handleRemoveQuestion}
-						onSaveForm={this.handleSaveForm}
+						onSaveQuest={this.handleSaveQuest}
 					/>
 				</TabPanel>
 
 				<TabPanel>
 					<QuestionEditor
 						questions={this.state.questions}
+						lists={this.state.lists}
 						types={this.state.types}
-						list_types={this.state.list_types}
 						onChangeQuestion={this.handleChangeQuestion}
 						onCreateQuestion={this.handleCreateQuestion}
 						onDeleteQuestion={this.handleDeleteQuestion}
@@ -284,7 +271,7 @@ class App extends React.Component {
 
 				<TabPanel>
 					<ListEditor
-						lists={this.state.list_types}
+						lists={this.state.lists}
 					/>
 				</TabPanel>
 			</Tabs>

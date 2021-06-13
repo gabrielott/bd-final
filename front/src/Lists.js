@@ -72,7 +72,8 @@ class ListEditor extends React.Component {
 				</div>
 				{this.props.lists.length > 0 &&
 				<div className="leditor-right">
-					<h1>lol</h1>
+					<ul>
+					</ul>
 				</div>
 				}
 			</div>
