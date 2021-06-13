@@ -1281,7 +1281,7 @@ class VodanSeeder extends Seeder
 		(277, 'Telefone do contato', 5, NULL, NULL, NULL, NULL),
 		(278, 'Data da Notificação', 2, NULL, NULL, NULL, NULL),
 		(279, 'Sintomas', 4, 17, 1, NULL, NULL),
-		(280, 'Data do início dos sintomas', 2, 1, NULL, NULL, NULL),
+		(280, 'Data do início dos sintomas', 2, NULL, NULL, NULL, NULL),
 		(281, 'Condições', 4, 18, NULL, NULL, NULL),
 		(282, 'Estado do Teste', 4, 19, NULL, NULL, NULL),
 		(283, 'Data da Coleta do Teste', 2, NULL, NULL, NULL, NULL),
