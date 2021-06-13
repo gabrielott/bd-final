@@ -15,7 +15,7 @@ class CreateQuestionnairesTable extends Migration
     {
         Schema::create('questionnaires', function (Blueprint $table) {
             $table->id();
-			$table->string('description')->unique();
+			$table->string('description');
             $table->boolean('is_published');
             $table->unsignedBigInteger('last_version_id')->nullable();
             $table->timestamps();

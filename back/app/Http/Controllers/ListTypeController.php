@@ -25,7 +25,6 @@ class ListTypeController extends Controller
                 $list_of_values->createListOfValues($values);
     
             }
-
         }
         return response()->json($list_type);
     }
@@ -64,11 +63,8 @@ class ListTypeController extends Controller
         $questions_id = Question::where('list_type_id', $list_type->id)->get()->pluck('id')->toArray();
         $modules_id = QuestionGroupForm::whereIn('question_id', $questions_id)->get()->pluck('crf_form_id')->toArray();
         $questionnairesIds = CrfForm::whereIn('id', $modules_id)->get()->pluck('questionnaire_id')->toArray();
-        if(!empty($questionnairesIds)){
-            $idFirst = $questionnairesIds[0];
-            if(!(count(array_unique($allvalues)) === 1))
-                return response()->json('Falha controlada: Lista já em uso.', 401);
-        }
+        if(!empty($questionnairesIds))
+            return response()->json('Falha controlada: Lista já em uso.', 401);
         foreach($request->list_of_values as $values){
             $values = (Object) $values;
             $value = ListOfValues::find($values->id);
@@ -82,5 +78,20 @@ class ListTypeController extends Controller
         $list = ListType::find($id);
         $list->listOfValues;
         return response()->json($list, 200);
+    }
+
+    public function deleteListType($id){
+        $list_type = ListType::find($id);
+        $questions_id = Question::where('list_type_id', $list_type->id)->get()->pluck('id')->toArray();
+        $modules_id = QuestionGroupForm::whereIn('question_id', $questions_id)->get()->pluck('crf_form_id')->toArray();
+        $questionnairesIds = CrfForm::whereIn('id', $modules_id)->get()->pluck('questionnaire_id')->toArray();
+        if(!empty($questionnairesIds))
+            return response()->json('Falha controlada: Lista já em uso.', 401);
+        $list_type = ListType::Find($id);
+        if($list_type){
+            ListType::destroy($id);
+            return response()->json('Tipo de lista deletada.', 200);
+        }
+        return response()->json('Tipo de lista não pode ser deletada', 500);
     }
 }

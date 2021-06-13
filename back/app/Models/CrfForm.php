@@ -9,13 +9,13 @@ class CrfForm extends Model
 {
     use HasFactory;
 
-    public function createCRFForm($request){
+    public function createCrfForm($request){
         $this->description = $request->description;
         $this->questionnaire_id = $request->questionnaire_id;
         $this->save();
     }
 
-    public function updateCRFForm($request){
+    public function updateCrfForm($request){
         if($request->description){
             $this->description = $request->description;
         }

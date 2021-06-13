@@ -3,108 +3,54 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Survey from "./Questionnaires.js";
 import QuestionEditor from "./Questions.js";
 import ListEditor from "./Lists.js";
+import api from "./services/api";
 import "./react-tabs.css";
 import "./App.css";
 
 class App extends React.Component {
-	constructor(props) {
-		super(props);
+	componentWillMount = async() => {
+		if(!this.state.loading) return;
+		const allQuests = await api.get('listQuestionnaires');
+		const questionnaires = allQuests.data;
 
-		const questionnaires = [
-			{
-				id: 1,
-				description: "Um questionário",
-			},
-		];
-
-		const modules = [
-			{
-				id: 1,
-				questionnaire_id: 1,
-				description: "Um módulo",
-			},
-		];
+		const response = await api.get('showQuestionnaire/2')
+		const modules = response.data.modules;
 
 		// question_groups_forms no back
-		const module_questions = [
-			{
-				id: 1,
-				// id do módulo
-				crf_form_id: 1,
-				question_id: 1,
-				question_order: 1,
-			},
-		];
+		const module_questions = response.data.groups;
 
-		const questions = [
-			{
-				id: 1,
-				description: "Uma pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 1,
-					description: "Um tipo",
-				},
-			},
-			{
-				id: 2,
-				description: "Outra pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 2,
-					description: "Dois tipo",
-				},
-			},
-			{
-				id: 3,
-				description: "Mais uma pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 3,
-					description: "Três tipo",
-				},
-			},
-		];
+		const allQuestions = await api.get('listQuestions');
+		const questions = allQuestions.data;
 
-		const lists = [
-			{
-				id: 1,
-				description: "Um list type",
-				list_of_values: [
-					{
-						id: 1,
-						description: "Uma opção",
-					},
-				],
-			},
-		];
+		const allLists = await api.get('listListType');
+		const lists = allLists.data;
 
-		const types = [
-			{
-				id: 1,
-				description: "Um tipo",
-			},
-			{
-				id: 2,
-				description: "dois tipo",
-			},
-			{
-				id: 3,
-				description: "Três tipo",
-			},
-		];
+		const allTypes = await api.get('listQuestionType');
+		const types = allTypes.data;
 
-		this.state = {
+		this.setState({
 			quests: questionnaires,
 			modules: modules,
 			module_questions: module_questions,
 			questions: questions,
 			lists: lists,
 			types: types,
+			loading: false
+		});
+	}
+	constructor(props) {
+		super(props);
+		
+
+		this.state = {
+			quests: [],
+			modules: [],
+			module_questions: [],
+			questions: [],
+			lists: [],
+			types: [],
 			tempid: 0,
+			loading: true
 		};
 
 		this.handleChangeQuestion = this.handleChangeQuestion.bind(this);
@@ -227,12 +173,28 @@ class App extends React.Component {
 		this.setState({module_questions: module_questions});
 	}
 
-	handleSaveQuest(questIndex) {
-		console.log(`save form ${questIndex}`);
+	async handleSaveQuest(questIndex) {
+		console.log(this.state);
+		const questionnaire = this.state.quests[questIndex]
+		const modules = this.state.modules.filter((m) => m.questionnaire_id === questionnaire.id);
+		const module_questions = this.state.module_questions.filter((mq) => modules.some((m) => m.id === mq.crf_form_id));
+		const request = {
+			questionnaire: questionnaire,
+			modules: this.state.modules,
+			module_questions: this.state.module_questions,
+		}
+		console.log(request);
+		const response = await api.put('updateQuestionnaire/' + questionnaire.id, request);
+		alert("Salvo com sucesso!");
 	}
 
 	render() {
 		return (
+			<div>
+			{this.state.loading &&
+				<h1 style={{color: "white"}}>Carregando...</h1> 
+			}
+			{ !this.state.loading &&
 			<Tabs className="tabs">
 				<TabList className="tablist">
 					<Tab>Questionários</Tab>
@@ -242,8 +204,8 @@ class App extends React.Component {
 
 				<TabPanel>
 					<Survey
-						index={0}
-						description={this.state.quests[0].description}
+						index={1}
+						description={this.state.quests[1].description}
 						modules={this.state.modules}
 						moduleQuestions={this.state.module_questions}
 						questions={this.state.questions}
@@ -275,6 +237,8 @@ class App extends React.Component {
 					/>
 				</TabPanel>
 			</Tabs>
+			}
+			</div>
 		);
 
 	}

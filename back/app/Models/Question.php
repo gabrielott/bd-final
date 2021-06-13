@@ -13,9 +13,12 @@ class Question extends Model
         $this->description = $request->description;
         $this->question_type_id = $request->question_type_id;
         $this->list_type_id = $request->list_type_id;
-        $this->question_group_id = $request->question_group_id;
-        $this->subordinate_to = $request->subordinate_to;
-        $this->is_about = $request->is_about;
+        if($request->question_group_id)
+            $this->question_group_id = $request->question_group_id;
+        if($request->subordinate_to)
+            $this->subordinate_to = $request->subordinate_to;
+        if($request->is_about)
+            $this->is_about = $request->is_about;
         $this->save();
     }
 
@@ -53,7 +56,7 @@ class Question extends Model
     }
 	
     public function subordinateTo() {
-        return $this->belongsTo('App\Models\Question'); 
+        return $this->belongsTo('App\Models\Question');
     }
 
     public function isAbout() {

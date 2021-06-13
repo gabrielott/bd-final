@@ -15,9 +15,13 @@ class CreateListOfValuesTable extends Migration
     {
         Schema::create('list_of_values', function (Blueprint $table) {
             $table->id();
-			$table->foreignId('list_type_id')->constrained();
+			$table->foreignId('list_type_id');
             $table->string('description');
             $table->timestamps();
+        });
+
+        Schema::table('list_of_values', function (Blueprint $table) {
+            $table->foreign('list_type_id')->references('id')->on('list_types')->onDelete('cascade');
         });
     }
 

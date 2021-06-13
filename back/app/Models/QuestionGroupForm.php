@@ -10,7 +10,7 @@ class QuestionGroupForm extends Model
     use HasFactory;
 
     public function saveQuestionGroupForm($request) {
-        if($request->question_id)
+        if($request->crf_form_id)
             $this->crf_form_id = $request->crf_form_id;
         if($request->question_id)
             $this->question_id = $request->question_id;

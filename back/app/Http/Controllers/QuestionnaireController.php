@@ -15,26 +15,26 @@ class QuestionnaireController extends Controller
 {
     public function createQuestionnaire(Request $request){
         $questionnaire = new Questionnaire;
-        $questionnaire->createQuestionnaire($request);
+        $questionnaire->createQuestionnaire($request->questionnaire);
         QuestionnaireController::createAllInformation($request, $questionnaire->id);
         return response()->json($questionnaire, 200);
     }
 
     private static function createAllInformation($request, $questionnaire_id){
-        foreach($request->module as $module){
+        foreach($request->modules as $module){
             $module = (Object) $module;
             $module->questionnaire_id = $questionnaire_id;
             $moduleBd = new CrfForm;
             $moduleBd->createCRFForm($module);
-            if(empty($request->module_questions)) continue;
-            foreach($request->module_questions as $id => $question){
-                $question = (Object) $question;
-                $group  = (object)[];
+            foreach($request->module_questions as $group){
+                $count = 1;
+                $group = (Object) $group;
+                if($group->crf_form_id != $module->id) continue;
                 $group->crf_form_id = $moduleBd->id;
+                $group->question_order = $count;
                 $groupBd = new QuestionGroupForm;
-                $group->question_id = $question;
-                $group->question_order = $id;
                 $groupBd->saveQuestionGroupForm($group);
+                $count++;
             }
         }
         return;
@@ -45,13 +45,14 @@ class QuestionnaireController extends Controller
         if(!$questionnaire)
             return response()->json('Nada encontrado', 404);
         if($questionnaire->last_version_id != NULL)
-            return response()->json('Não pode atualizar sem ser a ultima versao', 401);
+            return response()->json('Não pode atualizar sem ser a ultima versao', 405);
         $newQuestionnaire = new Questionnaire;
-        $newQuestionnaire->createQuestionnaire($request);
+        $newQuestionnaire->createQuestionnaire((Object)$request->questionnaire);
         $questionnaire->last_version_id = $newQuestionnaire->id;
         $questionnaire->save();
         Questionnaire::where('last_version_id', $id)
             ->update(['last_version_id' => $newQuestionnaire->id]);
+        $idsModules = [];
         QuestionnaireController::createAllInformation($request, $newQuestionnaire->id);
         return response()->json($newQuestionnaire, 200);
     }
