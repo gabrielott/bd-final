@@ -23,8 +23,8 @@ class ListType extends Model
     public function questions(){
         return $this->hasMany('App\Models\Question');
     }
-    public function listOfValue(){
-        return $this->hasMany('App\Models\ListOfValue');
+    public function listOfValues(){
+        return $this->hasMany('App\Models\ListOfValues');
     }
     
 }
