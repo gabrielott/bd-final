@@ -1,31 +1,11 @@
-.question {
-	display: flex;
-	justify-content: space-between;
-	background-color: lightgrey;
-	margin: 1em;
-	padding: 1em;
-	border-radius: 10px;
+html {
+	background-color: #101010;
 }
 
-.survey {
-	margin: 5em;
-	text-align: center;
+.tabs {
+	margin: 5%;
 }
 
-.inner-question {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-	margin-right: 5em;
-}
-
-input[type=submit] {
-	padding-left: 3em;
-	padding-right: 3em;
-	padding-top: .5em;
-	padding-bottom: .5em;
-}
-
-input[type=text] {
-	width: 80%;
+.tablist {
+	margin: 0;
 }

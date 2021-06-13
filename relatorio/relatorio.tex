@@ -1,0 +1,115 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+     
+\sloppy
+
+\title{Relatório da Implementação do módulo
+	de cadastro de questionário }
+
+\author{
+	Cristian Vilela\inst{1},
+	Filipe Castelo Branco\inst{1},
+	Gabriel da Fonseca Ottoboni Pinho\inst{1},\\
+	João Pedro Cavalcante\inst{1},
+	Rodrigo Delpreti de Siqueira\inst{1}
+}
+
+
+\address{Instituto de Computação --
+	Universidade Federal do Rio de Janeiro (UFRJ)\\
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+  This report describes a web project implementation
+  to be used in form registry, in accordance to the
+  VODAN BR support database schemas.
+\end{abstract}
+     
+\begin{resumo} 
+  Este relatório descreve a implementação
+  de um projeto web
+  para cadastro de formulário,
+  segundo requisitos da base de dados
+  de apoio VODAN BR.
+\end{resumo}
+
+
+\section{Introdução}
+
+No desenvolvimento da implementação
+apresentada no presente relatório,
+utilizaram-se as frameworks React e Laravel
+para o desenvolvimento do front-end e back-end
+respectivamente.
+Tais escolhas foram baseadas no conhecimento prévio
+da equipe, bem como no interesse de aprendizado dos membros.
+
+\section{Interface} \label{sec:firstpage}
+
+A interface da aplicação visa a montagem
+dos questionários à partir de botões e dropdowns,
+estruturados conforme a hierarquia designada na especificação.
+Estes componentes podem ser visualizados nas imagens abaixo.
+
+Após a montagem do questionário,
+basta clicar em salvar ao final,
+quando será então exibido um aviso de confirmação
+e o usuário será retornado à tela inicial.
+
+\section{Back-end}
+
+O backend feito em Laravel reedita as procedures
+definidas em SQL
+
+\section{Integração}
+
+Section titles must be in boldface, 13pt, flush left. There should be an extra
+12 pt of space before each title. Section numbering is optional. The first
+paragraph of each section should not be indented, while the first lines of
+subsequent paragraphs should be indented by 1.27 cm.
+
+\subsection{Subsections}
+
+The subsection titles must be in boldface, 12pt, flush left.
+
+\section{Figures and Captions}\label{sec:figs}
+
+
+Figure and table captions should be centered if less than one line
+(Figure~\ref{fig:exampleFig1}), otherwise justified and indented by 0.8cm on
+both margins, as shown in Figure~\ref{fig:exampleFig2}. The caption font must
+be Helvetica, 10 point, boldface, with 6 points of space before and after each
+caption.
+
+In tables, try to avoid the use of colored or shaded backgrounds, and avoid
+thick, doubled, or unnecessary framing lines. When reporting empirical data,
+do not use more decimal digits than warranted by their precision and
+reproducibility. Table caption must be placed before the table (see Table 1)
+and the font used must also be Helvetica, 10 point, boldface, with 6 points of
+space before and after each caption.
+
+\section{Images}
+
+All images and illustrations should be in black-and-white, or gray tones,
+excepting for the papers that will be electronically available (on CD-ROMs,
+internet, etc.). The image resolution on paper should be about 600 dpi for
+black-and-white images, and 150-300 dpi for grayscale images.  Do not include
+images with excessive resolution, as they may take hours to print, without any
+visible difference in the result. 
+
+\section{References}
+
+\cite{1}, \cite{2}, \cite{3}.
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}
