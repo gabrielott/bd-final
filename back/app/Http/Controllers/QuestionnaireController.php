@@ -7,30 +7,37 @@ use App\Models\Questionnaire;
 use App\Models\CrfForm;
 use App\Models\Question;
 use App\Models\QuestionGroupForm;
+use App\Models\ListOfValues;
+use App\Models\ListType;
+
 
 class QuestionnaireController extends Controller
 {
     public function createQuestionnaire(Request $request){
         $questionnaire = new Questionnaire;
         $questionnaire->createQuestionnaire($request);
+        QuestionnaireController::createAllInformation($request, $questionnaire->id);
+        return response()->json($questionnaire, 200);
+    }
+
+    private static function createAllInformation($request, $questionnaire_id){
         foreach($request->module as $module){
             $module = (Object) $module;
-            $module->questionnaire_id = $questionnaire->id;
+            $module->questionnaire_id = $questionnaire_id;
             $moduleBd = new CrfForm;
             $moduleBd->createCRFForm($module);
-            if(empty($module->groups)) continue;
-            foreach($module->groups as $group){
-                $group = (Object) $group;
+            if(empty($request->module_questions)) continue;
+            foreach($request->module_questions as $id => $question){
+                $question = (Object) $question;
+                $group  = (object)[];
                 $group->crf_form_id = $moduleBd->id;
-                foreach($group->questions as $question){
-                    $groupBd = new QuestionGroupForm;
-                    $group->question_id = $question;
-                    $group->question_order = $question;
-                    $groupBd->saveQuestionGroupForm($group);
-                }
+                $groupBd = new QuestionGroupForm;
+                $group->question_id = $question;
+                $group->question_order = $id;
+                $groupBd->saveQuestionGroupForm($group);
             }
         }
-        return response()->json($questionnaire, 200);
+        return;
     }
 
     public function updateQuestionnaire(Request $request, $id){
@@ -43,24 +50,9 @@ class QuestionnaireController extends Controller
         $newQuestionnaire->createQuestionnaire($request);
         $questionnaire->last_version_id = $newQuestionnaire->id;
         $questionnaire->save();
-        Questionnaire::where('last_version_id', $id)->update(['last_version_id' => $newQuestionnaire->id]);
-        foreach($request->module as $module){
-            $module = (Object) $module;
-            $module->questionnaire_id = $newQuestionnaire->id;
-            $moduleBd = new CrfForm;
-            $moduleBd->createCRFForm($module);
-            if(empty($module->groups)) continue;
-            foreach($module->groups as $group){
-                $group = (Object) $group;
-                $group->crf_form_id = $moduleBd->id;
-                foreach($group->questions as $question){
-                    $groupBd = new QuestionGroupForm;
-                    $group->question_id = $question;
-                    $group->question_order = $question;
-                    $groupBd->saveQuestionGroupForm($group);
-                }
-            }
-        }
+        Questionnaire::where('last_version_id', $id)
+            ->update(['last_version_id' => $newQuestionnaire->id]);
+        QuestionnaireController::createAllInformation($request, $newQuestionnaire->id);
         return response()->json($newQuestionnaire, 200);
     }
 
@@ -82,11 +74,14 @@ class QuestionnaireController extends Controller
         $idsModules = $modules->pluck('id');
         $groups = QuestionGroupForm::whereIn('crf_form_id', $idsModules)->get();
         $idsQuestions = $groups->pluck('question_id');
-        $questions = Question::whereIn('id', $idsQuestions)->get();
+        $questions = Question::whereIn('id', $idsQuestions)->with('questionType')->get();
+        $idsListTypes = $questions->pluck('list_type_id');
+        $listTypes = ListType::whereIn('id', $idsListTypes)->with('listOfValues')->get();
         return response()->json(["questionnaire" => $questionnaire,
                                 "modules" => $modules,
                                 "groups" => $groups,
-                                "questions" => $questions], 200);
+                                "questions" => $questions,
+                                'list_types' => $listTypes], 200);
     }
 
     public function deleteQuestionnaire($id){
