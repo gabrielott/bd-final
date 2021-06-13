@@ -21,6 +21,7 @@ class QuestionTypeController extends Controller
     public function show($id){
         return response()->json(QuestionType::find($id), 200);
     }
+    
     public function index(){
         return response()->json(QuestionType::all());
     }

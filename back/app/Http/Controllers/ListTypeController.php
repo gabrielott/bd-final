@@ -69,8 +69,6 @@ class ListTypeController extends Controller
             if(!(count(array_unique($allvalues)) === 1))
                 return response()->json('Falha controlada: Lista já em uso.', 401);
         }
-
-        
         foreach($request->list_of_values as $values){
             $values = (Object) $values;
             $value = ListOfValues::find($values->id);
