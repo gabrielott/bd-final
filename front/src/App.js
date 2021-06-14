@@ -22,7 +22,7 @@ class App extends React.Component {
 
 	componentWillMount = async() => {
 		if(!this.state.loading) return;
-		const allQuests = await api.get('listQuestionnaires');
+		const allQuests = await api.get('getAllLastVersion');
 		const questionnaires = allQuests.data;
 
 		const response = await api.get('showQuestionnaire/1')
@@ -56,7 +56,6 @@ class App extends React.Component {
 		this.state = {
 			quests: [],
 			modules: [],
-			module_questions: [],
 			questions: [],
 			lists: [],
 			types: [],
@@ -77,6 +76,7 @@ class App extends React.Component {
 		this.handleRemoveQuestion = this.handleRemoveQuestion.bind(this);
 		this.handleSelectQuest = this.handleSelectQuest.bind(this);
 		this.handleSaveQuest = this.handleSaveQuest.bind(this);
+		this.handleNewForm = this.handleNewForm.bind(this);
 	}
 
 	// Chamadas pela aba de questões
@@ -115,7 +115,7 @@ class App extends React.Component {
 	handleChangeList() {
 
 	}
-	
+
 	handleCreateList() {
 
 	}
@@ -125,12 +125,11 @@ class App extends React.Component {
 	}
 
 	// Chamadas pela aba de formulários
-	
-	handleChangeQuest(questIndex, name, value) {
-		const quests = this.state.quests.slice();
-		const quest = quests[questIndex];
 
-		quest[name] = value;
+	handleChangeQuest(quest, name, value) {
+		const quests = this.state.quests.slice();
+		quest.description = value;
+
 		this.setState({quests: quests});
 	}
 
@@ -142,27 +141,38 @@ class App extends React.Component {
 	}
 
 	handleSelectQuestion(moduleQuestionIndex, questionId) {
-		const module_questions = this.state.module_questions.slice();
+		const module_questions = this.state.questionsSelected.slice();
 		module_questions[moduleQuestionIndex].question_id = questionId;
 		this.setState({module_questions: module_questions});
 	}
 
-	handleCreateModule(questIndex) {
+	handleCreateModule(quest) {
 		const modules = this.state.modules.slice();
 		modules.push({
 			id: "new",
-			questionnaire_id: questIndex,
+			questionnaire_id: quest.id,
 			description: "Novo módulo",
 		});
 		this.setState({modules: modules});
 	}
+	handleNewForm(){
+		const questionnaire = {
+			id: "new",
+			description: "Novo form"
+		};
+		this.setState({
+			modules: [],
+			questSelected: questionnaire,
+			questionsSelected: [],
+		});
+	}
 
 	handleAddQuestion(moduleId) {
 		// TODO: Id padrão
-		
+
 		console.log(`module=${moduleId}`);
 
-		const module_questions = this.state.module_questions.slice();
+		const module_questions = this.state.questionsSelected.slice();
 		module_questions.push({
 			id: "new",
 			crf_form_id: moduleId,
@@ -170,7 +180,7 @@ class App extends React.Component {
 			question_order: "new",
 		});
 
-		this.setState({module_questions: module_questions});
+		this.setState({questionsSelected: module_questions});
 	}
 
 	handleDeleteModule(moduleIndex) {
@@ -180,9 +190,10 @@ class App extends React.Component {
 	}
 
 	handleRemoveQuestion(moduleQuestionIndex) {
-		const module_questions = this.state.module_questions.slice();
-		module_questions.splice(moduleQuestionIndex, 1);
-		this.setState({module_questions: module_questions});
+		console.log(moduleQuestionIndex);
+		const questionsSelected = this.state.questionsSelected.slice();
+		questionsSelected.splice(moduleQuestionIndex, 1);
+		this.setState({questionsSelected: questionsSelected});
 	}
 
 	handleSelectQuest(event) {
@@ -192,19 +203,25 @@ class App extends React.Component {
 		this.getQuest(value);
 	}
 
-	async handleSaveQuest(questIndex) {
+	async handleSaveQuest(quest) {
 		console.log(this.state);
-		const questionnaire = this.state.quests[questIndex]
+		const questionnaire = quest;
 		const modules = this.state.modules.filter((m) => m.questionnaire_id === questionnaire.id);
-		const module_questions = this.state.module_questions.filter((mq) => modules.some((m) => m.id === mq.crf_form_id));
+		const module_questions = this.state.questionsSelected;
 		const request = {
 			questionnaire: questionnaire,
 			modules: this.state.modules,
-			module_questions: this.state.module_questions,
+			module_questions: this.state.questionsSelected,
 		}
 		console.log(request);
-		const response = await api.put('updateQuestionnaire/' + questionnaire.id, request);
+		if(questionnaire.id != "new"){
+			const response = await api.put('updateQuestionnaire/' + questionnaire.id, request);
+		}
+		else{
+			const response = await api.post('createQuestionnaire', request);
+		}
 		alert("Salvo com sucesso!");
+		window.location.reload()
 	}
 
 	render() {
@@ -217,7 +234,7 @@ class App extends React.Component {
 		return (
 			<div>
 			{this.state.loading &&
-				<h1 style={{color: "white"}}>Carregando...</h1> 
+				<h1 style={{color: "white"}}>Carregando...</h1>
 			}
 			{ !this.state.loading &&
 			<Tabs className="tabs">
@@ -234,6 +251,7 @@ class App extends React.Component {
 					>
 						{quests}
 					</select>
+					<button type="button" onClick={this.handleNewForm}> Novo formulário</button>
 					<Survey
 						index={this.state.questSelected}
 						description={this.state.questSelected.description}

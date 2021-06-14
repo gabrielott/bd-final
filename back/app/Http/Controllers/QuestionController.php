@@ -10,7 +10,7 @@ class QuestionController extends Controller
 	public function index() {
 		return response()->json(Question::all());
 	}
-	
+
 	public function show($id) {
 		return response()->json(Question::find($id));
 	}
@@ -25,7 +25,7 @@ class QuestionController extends Controller
         $question->updateQuestion($request);
         return response()->json($question);
     }
-    
+
     public function deleteQuestion($id){
         $question = Question::Find($id);
         if($question){
@@ -34,4 +34,5 @@ class QuestionController extends Controller
         }
         return response()->json('Questão não existe.', 500);
     }
+	
 }
