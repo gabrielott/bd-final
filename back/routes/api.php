@@ -28,6 +28,7 @@ Route::post('createUserAdmin', [UserController::class, 'createUserAdmin']);
 Route::post('createQuestionnaire', [QuestionnaireController::class, 'createQuestionnaire']);
 Route::get('listQuestionnaires', [QuestionnaireController::class, 'index']);
 Route::get('showQuestionnaire/{id}', [QuestionnaireController::class, 'show']);
+Route::get('getAllLastVersion', [QuestionnaireController::class, 'getAllLastVersion']);
 Route::get('getVersions/{id}', [QuestionnaireController::class, 'getVersions']);
 Route::put('updateQuestionnaire/{id}', [QuestionnaireController::class, 'updateQuestionnaire']);
 Route::delete('deleteQuestionnaire/{id}', [QuestionnaireController::class, 'deleteQuestionnaire']);

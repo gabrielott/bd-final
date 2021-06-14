@@ -15,7 +15,7 @@ class QuestionnaireController extends Controller
 {
     public function createQuestionnaire(Request $request){
         $questionnaire = new Questionnaire;
-        $questionnaire->createQuestionnaire($request->questionnaire);
+        $questionnaire->createQuestionnaire((Object) $request->questionnaire);
         QuestionnaireController::createAllInformation($request, $questionnaire->id);
         return response()->json($questionnaire, 200);
     }
@@ -94,5 +94,8 @@ class QuestionnaireController extends Controller
             }
         }
         return response()->json('Questionario não pode ser deletado: Não existe ou está publicado.', 500);
+    }
+	public function getAllLastVersion(){
+        return response()->json(Questionnaire::whereNull('last_version_id')->get(), 200);
     }
 }
