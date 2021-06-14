@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.4.26)  9 JUN 2021 22:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.4.26)  13 JUN 2021 23:43
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -261,40 +261,62 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 28.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 28.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 5
+5.
 
+(c:/texlive/2021/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+<front.png, id=1, 1370.11874pt x 729.72626pt>
+File: front.png Graphic file (type png)
+<use front.png>
+Package pdftex.def Info: front.png  used on input line 66.
+(pdftex.def)             Requested size: 213.39568pt x 113.652pt.
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 6
+7.
 
-LaTeX Warning: Reference `fig:exampleFig1' on page 1 undefined on input line 87
-.
+(c:/texlive/2021/texmf-dist/tex/latex/psnfss/ot1phv.fd
+File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
+)
+<questoes.png, id=2, 1370.11874pt x 729.72626pt>
+File: questoes.png Graphic file (type png)
+<use questoes.png>
+Package pdftex.def Info: questoes.png  used on input line 82.
+(pdftex.def)             Requested size: 213.39568pt x 113.652pt.
+<listas.png, id=3, 1370.11874pt x 729.72626pt>
+File: listas.png Graphic file (type png)
+<use listas.png>
+Package pdftex.def Info: listas.png  used on input line 89.
+(pdftex.def)             Requested size: 213.39568pt x 113.652pt.
+ [1
 
+{c:/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./front.png>]
+Underfull \hbox (badness 4341) in paragraph at lines 121--130
+\OT1/ptm/m/n/12 Para si-mu-lar-mos o banco de da-dos ini-cial, uti-li-za-mos si
+n-taxe MySQL (com
+ []
 
-LaTeX Warning: Reference `fig:exampleFig2' on page 1 undefined on input line 88
-.
-
-[1
-
-{c:/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(./relatorio.bbl) [2] (./relatorio.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+[2 <./questoes.png> <./listas.png>] (./relatorio.bbl) [3] (./relatorio.aux) ) 
 Here is how much of TeX's memory you used:
- 4965 strings out of 478994
- 77757 string characters out of 5862207
- 395851 words of memory out of 5000000
- 22393 multiletter control sequences out of 15000+600000
- 416956 words of font info for 50 fonts, out of 8000000 for 9000
+ 5091 strings out of 478994
+ 79433 string characters out of 5862207
+ 396905 words of memory out of 5000000
+ 22504 multiletter control sequences out of 15000+600000
+ 420316 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,10n,88p,282b,231s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2021/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2021/texmf-dist/font
-s/type1/urw/times/utmb8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/urw/times/
-utmbi8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/te
-xlive/2021/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on relatorio.pdf (2 pages, 63021 bytes).
+ 83i,10n,88p,282b,392s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c
+:/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2021/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2021/texmf-dist/fonts/ty
+pe1/urw/courier/ucrr8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/urw/helvetic
+/uhvb8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><c:/te
+xlive/2021/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><c:/texlive/2021/texmf-
+dist/fonts/type1/urw/times/utmr8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/u
+rw/times/utmri8a.pfb>
+Output written on relatorio.pdf (3 pages, 171327 bytes).
 PDF statistics:
- 32 PDF objects out of 1000 (max. 8388607)
- 22 compressed objects within 1 object stream
+ 46 PDF objects out of 1000 (max. 8388607)
+ 30 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
