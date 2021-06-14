@@ -15,9 +15,11 @@ function Survey(props) {
 			key={i}
 			index={i}
 			moduleId={m.id}
+			modulesLength={props.modules.length}
 			description={m.description}
 			moduleQuestions={props.moduleQuestions}
 			questions={props.questions}
+			questionsSelected={props.questionsSelected}
 			onChangeModule={props.onChangeModule}
 			onSelectQuestion={props.onSelectQuestion}
 			onAddQuestion={props.onAddQuestion}
@@ -67,22 +69,17 @@ function Module(props) {
 		);
 	}
 
-	const questions = props.moduleQuestions.reduce((acc, cur, i) => {
-		if (cur.crf_form_id === props.moduleId) {
-			acc.push(
-				<Question
-					key={i}
-					index={i}
-					moduleId={props.moduleId}
-					questions={props.questions}
-					questionId={cur.question_id}
-					onSelectQuestion={props.onSelectQuestion}
-					onRemoveQuestion={props.onRemoveQuestion}
-				/>
-			);
-		}
-		return acc;
-	}, []);
+	const questions = props.moduleQuestions.map((q, i) => (
+		<Question
+			key={i}
+			index={i}
+			moduleId={props.moduleId}
+			questions={props.questions}
+			questionId={q.question_id}
+			onSelectQuestion={props.onSelectQuestion}
+			onRemoveQuestion={props.onRemoveQuestion}
+		/>
+	));
 
 	return (
 		<div className="module">
@@ -107,7 +104,7 @@ function Module(props) {
 				<button
 					type="button"
 					onClick={() => props.onDeleteModule(props.moduleId)}
-					disabled={props.index === 0}
+					disabled={props.modulesLength === 1}
 				>
 					Deletar módulo
 				</button>

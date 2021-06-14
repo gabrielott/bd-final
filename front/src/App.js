@@ -8,12 +8,24 @@ import "./react-tabs.css";
 import "./App.css";
 
 class App extends React.Component {
+	async getQuest(id) {
+		const response = await api.get(`showQuestionnaire/${id}`);
+		const modules = response.data.modules;
+		const module_questions = response.data.groups;
+		this.setState({
+			questSelected: response.data.questionnaire,
+			questionsSelected: response.data.questions,
+			modules: modules,
+			module_questions: module_questions,
+		});
+	}
+
 	componentWillMount = async() => {
 		if(!this.state.loading) return;
 		const allQuests = await api.get('listQuestionnaires');
 		const questionnaires = allQuests.data;
 
-		const response = await api.get('showQuestionnaire/2')
+		const response = await api.get('showQuestionnaire/1')
 		const modules = response.data.modules;
 
 		// question_groups_forms no back
@@ -35,12 +47,14 @@ class App extends React.Component {
 			questions: questions,
 			lists: lists,
 			types: types,
-			loading: false
+			loading: false,
+			questSelected: questionnaires[0],
+			questionsSelected: response.data.questions,
 		});
 	}
+
 	constructor(props) {
 		super(props);
-		
 
 		this.state = {
 			quests: [],
@@ -64,6 +78,7 @@ class App extends React.Component {
 		this.handleAddQuestion = this.handleAddQuestion.bind(this);
 		this.handleDeleteModule = this.handleDeleteModule.bind(this);
 		this.handleRemoveQuestion = this.handleRemoveQuestion.bind(this);
+		this.handleSelectQuest = this.handleSelectQuest.bind(this);
 		this.handleSaveQuest = this.handleSaveQuest.bind(this);
 	}
 
@@ -173,6 +188,13 @@ class App extends React.Component {
 		this.setState({module_questions: module_questions});
 	}
 
+	handleSelectQuest(event) {
+		const target = event.target;
+		const value = target.value;
+
+		this.getQuest(value);
+	}
+
 	async handleSaveQuest(questIndex) {
 		console.log(this.state);
 		const questionnaire = this.state.quests[questIndex]
@@ -189,6 +211,12 @@ class App extends React.Component {
 	}
 
 	render() {
+		const quests = this.state.quests.map((q, i) => (
+			<option key={i} value={q.id}>
+				{q.description}
+			</option>
+		));
+
 		return (
 			<div>
 			{this.state.loading &&
@@ -203,12 +231,19 @@ class App extends React.Component {
 				</TabList>
 
 				<TabPanel>
+					<select
+						value={this.state.questSelected.id}
+						onChange={this.handleSelectQuest}
+					>
+						{quests}
+					</select>
 					<Survey
-						index={1}
-						description={this.state.quests[1].description}
+						index={this.state.questSelected}
+						description={this.state.questSelected.description}
 						modules={this.state.modules}
 						moduleQuestions={this.state.module_questions}
 						questions={this.state.questions}
+						questionsSelected={this.state.questionsSelected}
 						onChangeQuest={this.handleChangeQuest}
 						onChangeModule={this.handleChangeModule}
 						onSelectQuestion={this.handleSelectQuestion}
