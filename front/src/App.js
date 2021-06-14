@@ -14,7 +14,7 @@ class App extends React.Component {
 		const module_questions = response.data.groups;
 		this.setState({
 			questSelected: response.data.questionnaire,
-			questionsSelected: response.data.questions,
+			questionsSelected: response.data.groups,
 			modules: modules,
 			module_questions: module_questions,
 		});
@@ -29,8 +29,6 @@ class App extends React.Component {
 		const modules = response.data.modules;
 
 		// question_groups_forms no back
-		const module_questions = response.data.groups;
-
 		const allQuestions = await api.get('listQuestions');
 		const questions = allQuestions.data;
 
@@ -43,13 +41,12 @@ class App extends React.Component {
 		this.setState({
 			quests: questionnaires,
 			modules: modules,
-			module_questions: module_questions,
 			questions: questions,
 			lists: lists,
 			types: types,
 			loading: false,
 			questSelected: questionnaires[0],
-			questionsSelected: response.data.questions,
+			questionsSelected: response.data.groups,
 		});
 	}
 
@@ -241,7 +238,6 @@ class App extends React.Component {
 						index={this.state.questSelected}
 						description={this.state.questSelected.description}
 						modules={this.state.modules}
-						moduleQuestions={this.state.module_questions}
 						questions={this.state.questions}
 						questionsSelected={this.state.questionsSelected}
 						onChangeQuest={this.handleChangeQuest}

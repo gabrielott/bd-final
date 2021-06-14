@@ -17,9 +17,8 @@ function Survey(props) {
 			moduleId={m.id}
 			modulesLength={props.modules.length}
 			description={m.description}
-			moduleQuestions={props.moduleQuestions}
 			questions={props.questions}
-			questionsSelected={props.questionsSelected}
+			questionsSelected={props.questionsSelected.filter((q) => q.crf_form_id === m.id)}
 			onChangeModule={props.onChangeModule}
 			onSelectQuestion={props.onSelectQuestion}
 			onAddQuestion={props.onAddQuestion}
@@ -69,7 +68,7 @@ function Module(props) {
 		);
 	}
 
-	const questions = props.moduleQuestions.map((q, i) => (
+	const questions = props.questionsSelected.map((q, i) => (
 		<Question
 			key={i}
 			index={i}
