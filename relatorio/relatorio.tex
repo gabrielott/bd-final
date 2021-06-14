@@ -47,9 +47,13 @@ No desenvolvimento da implementação
 apresentada no presente relatório,
 utilizaram-se as frameworks React e Laravel
 para o desenvolvimento do front-end e back-end
-respectivamente.
-Tais escolhas foram baseadas no conhecimento prévio
-da equipe, bem como no interesse de aprendizado dos membros.
+respectivamente. 
+Tais escolhas foram feitas de acordo com
+o interesse de aprendizado dos membros,
+e também por serem as mesmas
+frameworks utilizadas pela equipe do VodanBR.
+Consideramos que seria interessante a proximidade
+com a realidade do projeto.
 
 O código está disponibilizado no repositório do
 Github: \url{https://github.com/gabrielott/bd-final}.
@@ -134,6 +138,17 @@ para seguir o padrão que adotamos no banco de dados
 e adicionar o novo formulário com seus módulos,
 questões e respostas padronizadas referentes.
 
+\subsection{Migrations}
+
+As Migrations são as tabelas propriamente ditas
+do banco de dados. Possuem as colunas, chave primária,
+chaves estrangeiras e suas referências,
+além de padrões de deleção (\texttt{set null},
+\texttt{cascade}, etc).
+Com a sintaxe do laravel também conseguimos
+escolher os tipos das colunas, além de utilizar
+modificadores, como \texttt{unique} e \texttt{nullable}.
+
 \subsection{Rotas}
 
 O arquivo \texttt{api.php} contém as rotas da nossa aplicação.
@@ -176,12 +191,16 @@ sobre o qual não entraremos em muitos detalhes.
 Assim, conforme o modelo descrito acima, as páginas
 apresentadas no front-end realizam requisições para a API
 servida no back-end.
+Infelizmente não foi possível integrar todo o projeto,
+visto que possuíamos pouco conhecimento
+prévio das frameworks. Foi uma decisão que acabou
+atrapalhando a entrega do projeto,
+mas todos os membros concordaram
+em aproveitar essa oportunidade única
+e buscar esse conhecimento e trabalho em equipe.
 
-
-
-\section{Referências}
-
-\cite{1}, \cite{2}, \cite{3}.
+Mais detalhes e comentários da implementação
+estão no vídeo enviado no Google Classroom.
 
 \bibliographystyle{sbc}
 \bibliography{sbc-template}
