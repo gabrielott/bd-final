@@ -3,108 +3,64 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Survey from "./Questionnaires.js";
 import QuestionEditor from "./Questions.js";
 import ListEditor from "./Lists.js";
+import api from "./services/api";
 import "./react-tabs.css";
 import "./App.css";
 
 class App extends React.Component {
-	constructor(props) {
-		super(props);
-
-		const questionnaires = [
-			{
-				id: 1,
-				description: "Um questionário",
-			},
-		];
-
-		const modules = [
-			{
-				id: 1,
-				questionnaire_id: 1,
-				description: "Um módulo",
-			},
-		];
-
-		// question_groups_forms no back
-		const module_questions = [
-			{
-				id: 1,
-				// id do módulo
-				crf_form_id: 1,
-				question_id: 1,
-				question_order: 1,
-			},
-		];
-
-		const questions = [
-			{
-				id: 1,
-				description: "Uma pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 1,
-					description: "Um tipo",
-				},
-			},
-			{
-				id: 2,
-				description: "Outra pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 2,
-					description: "Dois tipo",
-				},
-			},
-			{
-				id: 3,
-				description: "Mais uma pergunta",
-				question_type_id: 1,
-				list_type_id: null,
-				question_type: {
-					id: 3,
-					description: "Três tipo",
-				},
-			},
-		];
-
-		const lists = [
-			{
-				id: 1,
-				description: "Um list type",
-				list_of_values: [
-					{
-						id: 1,
-						description: "Uma opção",
-					},
-				],
-			},
-		];
-
-		const types = [
-			{
-				id: 1,
-				description: "Um tipo",
-			},
-			{
-				id: 2,
-				description: "dois tipo",
-			},
-			{
-				id: 3,
-				description: "Três tipo",
-			},
-		];
-
-		this.state = {
-			quests: questionnaires,
+	async getQuest(id) {
+		const response = await api.get(`showQuestionnaire/${id}`);
+		const modules = response.data.modules;
+		const module_questions = response.data.groups;
+		this.setState({
+			questSelected: response.data.questionnaire,
+			questionsSelected: response.data.groups,
 			modules: modules,
 			module_questions: module_questions,
+		});
+	}
+
+	componentWillMount = async() => {
+		if(!this.state.loading) return;
+		const allQuests = await api.get('getAllLastVersion');
+		const questionnaires = allQuests.data;
+
+		const response = await api.get('showQuestionnaire/1')
+		const modules = response.data.modules;
+
+		// question_groups_forms no back
+		const allQuestions = await api.get('listQuestions');
+		const questions = allQuestions.data;
+
+		const allLists = await api.get('listListType');
+		const lists = allLists.data;
+
+		const allTypes = await api.get('listQuestionType');
+		const types = allTypes.data;
+
+		this.setState({
+			quests: questionnaires,
+			modules: modules,
 			questions: questions,
 			lists: lists,
 			types: types,
+			loading: false,
+			questSelected: questionnaires[0],
+			questionsSelected: response.data.groups,
+		});
+	}
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			quests: [],
+			modules: [],
+			questions: [],
+			lists: [],
+			types: [],
 			tempid: 0,
+			loading: true
 		};
 
 		this.handleChangeQuestion = this.handleChangeQuestion.bind(this);
@@ -118,7 +74,9 @@ class App extends React.Component {
 		this.handleAddQuestion = this.handleAddQuestion.bind(this);
 		this.handleDeleteModule = this.handleDeleteModule.bind(this);
 		this.handleRemoveQuestion = this.handleRemoveQuestion.bind(this);
+		this.handleSelectQuest = this.handleSelectQuest.bind(this);
 		this.handleSaveQuest = this.handleSaveQuest.bind(this);
+		this.handleNewForm = this.handleNewForm.bind(this);
 	}
 
 	// Chamadas pela aba de questões
@@ -157,7 +115,7 @@ class App extends React.Component {
 	handleChangeList() {
 
 	}
-	
+
 	handleCreateList() {
 
 	}
@@ -167,12 +125,11 @@ class App extends React.Component {
 	}
 
 	// Chamadas pela aba de formulários
-	
-	handleChangeQuest(questIndex, name, value) {
-		const quests = this.state.quests.slice();
-		const quest = quests[questIndex];
 
-		quest[name] = value;
+	handleChangeQuest(quest, name, value) {
+		const quests = this.state.quests.slice();
+		quest.description = value;
+
 		this.setState({quests: quests});
 	}
 
@@ -184,27 +141,38 @@ class App extends React.Component {
 	}
 
 	handleSelectQuestion(moduleQuestionIndex, questionId) {
-		const module_questions = this.state.module_questions.slice();
+		const module_questions = this.state.questionsSelected.slice();
 		module_questions[moduleQuestionIndex].question_id = questionId;
 		this.setState({module_questions: module_questions});
 	}
 
-	handleCreateModule(questIndex) {
+	handleCreateModule(quest) {
 		const modules = this.state.modules.slice();
 		modules.push({
 			id: "new",
-			questionnaire_id: questIndex,
+			questionnaire_id: quest.id,
 			description: "Novo módulo",
 		});
 		this.setState({modules: modules});
 	}
+	handleNewForm(){
+		const questionnaire = {
+			id: "new",
+			description: "Novo form"
+		};
+		this.setState({
+			modules: [],
+			questSelected: questionnaire,
+			questionsSelected: [],
+		});
+	}
 
 	handleAddQuestion(moduleId) {
 		// TODO: Id padrão
-		
+
 		console.log(`module=${moduleId}`);
 
-		const module_questions = this.state.module_questions.slice();
+		const module_questions = this.state.questionsSelected.slice();
 		module_questions.push({
 			id: "new",
 			crf_form_id: moduleId,
@@ -212,7 +180,7 @@ class App extends React.Component {
 			question_order: "new",
 		});
 
-		this.setState({module_questions: module_questions});
+		this.setState({questionsSelected: module_questions});
 	}
 
 	handleDeleteModule(moduleIndex) {
@@ -222,17 +190,53 @@ class App extends React.Component {
 	}
 
 	handleRemoveQuestion(moduleQuestionIndex) {
-		const module_questions = this.state.module_questions.slice();
-		module_questions.splice(moduleQuestionIndex, 1);
-		this.setState({module_questions: module_questions});
+		console.log(moduleQuestionIndex);
+		const questionsSelected = this.state.questionsSelected.slice();
+		questionsSelected.splice(moduleQuestionIndex, 1);
+		this.setState({questionsSelected: questionsSelected});
 	}
 
-	handleSaveQuest(questIndex) {
-		console.log(`save form ${questIndex}`);
+	handleSelectQuest(event) {
+		const target = event.target;
+		const value = target.value;
+
+		this.getQuest(value);
+	}
+
+	async handleSaveQuest(quest) {
+		console.log(this.state);
+		const questionnaire = quest;
+		const modules = this.state.modules.filter((m) => m.questionnaire_id === questionnaire.id);
+		const module_questions = this.state.questionsSelected;
+		const request = {
+			questionnaire: questionnaire,
+			modules: this.state.modules,
+			module_questions: this.state.questionsSelected,
+		}
+		console.log(request);
+		if(questionnaire.id != "new"){
+			const response = await api.put('updateQuestionnaire/' + questionnaire.id, request);
+		}
+		else{
+			const response = await api.post('createQuestionnaire', request);
+		}
+		alert("Salvo com sucesso!");
+		window.location.reload()
 	}
 
 	render() {
+		const quests = this.state.quests.map((q, i) => (
+			<option key={i} value={q.id}>
+				{q.description}
+			</option>
+		));
+
 		return (
+			<div>
+			{this.state.loading &&
+				<h1 style={{color: "white"}}>Carregando...</h1>
+			}
+			{ !this.state.loading &&
 			<Tabs className="tabs">
 				<TabList className="tablist">
 					<Tab>Questionários</Tab>
@@ -241,12 +245,19 @@ class App extends React.Component {
 				</TabList>
 
 				<TabPanel>
+					<select
+						value={this.state.questSelected.id}
+						onChange={this.handleSelectQuest}
+					>
+						{quests}
+					</select>
+					<button type="button" onClick={this.handleNewForm}> Novo formulário</button>
 					<Survey
-						index={0}
-						description={this.state.quests[0].description}
+						index={this.state.questSelected}
+						description={this.state.questSelected.description}
 						modules={this.state.modules}
-						moduleQuestions={this.state.module_questions}
 						questions={this.state.questions}
+						questionsSelected={this.state.questionsSelected}
 						onChangeQuest={this.handleChangeQuest}
 						onChangeModule={this.handleChangeModule}
 						onSelectQuestion={this.handleSelectQuestion}
@@ -275,6 +286,8 @@ class App extends React.Component {
 					/>
 				</TabPanel>
 			</Tabs>
+			}
+			</div>
 		);
 
 	}
